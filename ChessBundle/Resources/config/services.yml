@@ -1,0 +1,7 @@
+parameters:
+#    polcode_chess.example.class: Polcode\ChessBundle\Example
+
+services:
+#    polcode_chess.example:
+#        class: %polcode_chess.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
