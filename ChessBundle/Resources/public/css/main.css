@@ -1,0 +1,60 @@
+html,
+html * {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: url('../images/background.jpg') repeat;
+	background-size: 30%;
+}
+
+main {
+	background: #BABABA;
+	min-height: 800px;
+	padding: 30px;
+}
+
+#main-wrap {
+	width: 1100px;
+	margin: 0 auto;
+}
+
+#main-header {
+	overflow: hidden;
+}
+
+#main-header,
+#main-wrap footer {
+	background-image: linear-gradient(left bottom, rgb(0,0,0) 27%, rgb(54,54,54) 57%, rgb(97,97,97) 100%);
+	background-image: -o-linear-gradient(left bottom, rgb(0,0,0) 27%, rgb(54,54,54) 57%, rgb(97,97,97) 100%);
+	background-image: -moz-linear-gradient(left bottom, rgb(0,0,0) 27%, rgb(54,54,54) 57%, rgb(97,97,97) 100%);
+	background-image: -webkit-linear-gradient(left bottom, rgb(0,0,0) 27%, rgb(54,54,54) 57%, rgb(97,97,97) 100%);
+	background-image: -ms-linear-gradient(left bottom, rgb(0,0,0) 27%, rgb(54,54,54) 57%, rgb(97,97,97) 100%);
+	
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		right top,
+		color-stop(0.27, rgb(0,0,0)),
+		color-stop(0.57, rgb(54,54,54)),
+		color-stop(1, rgb(97,97,97))
+	);
+	
+	color: #fff;
+}
+
+#main-header h1 {
+	margin: 50px 90px;
+	display: inline-block;
+	color: #7D7D7D;
+	font-family: 'Aguafina Script', cursive;
+	font-size: 50px;
+	border-bottom: 2px solid #525252;
+}
+
+#main-header img {
+	float: right;
+	margin: 10px;
+	border-radius: 10px;
+}

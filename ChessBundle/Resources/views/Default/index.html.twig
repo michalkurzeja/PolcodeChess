@@ -1,1 +1,6 @@
-Hello {{ name }}!
+{% extends 'PolcodeChessBundle::layout.html.twig' %}
+
+{%block content %}
+	{{ parent() }}
+	Hello {{ name }}!
+{% endblock %}
