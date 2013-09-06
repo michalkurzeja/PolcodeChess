@@ -53,7 +53,7 @@ class Queen extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(1, -1) );
+        $vectors = array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(-1, 1) );
     }
 
     /**
@@ -179,5 +179,33 @@ class Queen extends Piece
     public function getRow()
     {
         return $this->row;
+    }
+    /**
+     * @var integer
+     */
+    protected $file;
+
+
+    /**
+     * Set file
+     *
+     * @param integer $file
+     * @return Queen
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    
+        return $this;
+    }
+
+    /**
+     * Get file
+     *
+     * @return integer 
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 }

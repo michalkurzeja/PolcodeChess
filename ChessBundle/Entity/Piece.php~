@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\DiscriminatorColumn(name="piece_type", type="string")
  * @ORM\DiscriminatorMap({"piece" = "Piece", "pawn" = "Pawn", "bishop"="Bishop", "knight"="Knight", "rook"="Rook", "queen"="Queen", "king"="King"})
  */
-class Piece
+abstract class Piece
 {
     /**
      * @ORM\Id
@@ -50,16 +50,40 @@ class Piece
      * 
      * @var int
      */
-    protected $row;
+    protected $file;
+    
+    protected $multimove;
 
-    function __construct($rank, $row, $is_white, $game_id)
+    public function __construct($rank, $file, $is_white, $game_id)
     {
-        $this->rank = $this->setRank($rank);
-        $this->row = $this->setRow($row);
+
         $this->is_white = $this->setIsWhite($is_white);
         $this->game_id = $this->setGameId($game_id);
     }
 
+    /**
+     * @return array
+     */
+    abstract public function getMoveVectors();
+    
+    /**
+     * @return boolean
+     */
+    public function isMultimove()
+    {
+        return $this->multimove;
+    }
+    
+    /**
+     * @param boolean
+     */
+    public function setMultimove($multimove)
+    {
+        $this->multimove = $multimove;
+        
+        return $this;
+    }
+    
     /**
      * Get id
      *
@@ -114,52 +138,6 @@ class Piece
     public function getIsWhite()
     {
         return $this->is_white;
-    }
-
-    /**
-     * Set rank
-     *
-     * @param integer $rank
-     * @return Piece
-     */
-    public function setRank($rank)
-    {
-        $this->rank = $rank;
-    
-        return $this;
-    }
-
-    /**
-     * Get rank
-     *
-     * @return integer 
-     */
-    public function getRank()
-    {
-        return $this->rank;
-    }
-
-    /**
-     * Set row
-     *
-     * @param integer $row
-     * @return Piece
-     */
-    public function setRow($row)
-    {
-        $this->row = $row;
-    
-        return $this;
-    }
-
-    /**
-     * Get row
-     *
-     * @return integer 
-     */
-    public function getRow()
-    {
-        return $this->row;
     }
 
     /**

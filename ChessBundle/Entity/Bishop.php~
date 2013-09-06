@@ -42,7 +42,20 @@ class Bishop extends Piece
      */
     protected $row;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setMultimove(true);
+    }
 
+    /**
+     * @return array
+     */
+    public function getMoveVectors()
+    { 
+        $vectors = array( new Vector(1, 1), new Vector(1, -1) );
+    }
+ 
     /**
      * Set is_checking
      *

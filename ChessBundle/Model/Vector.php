@@ -8,21 +8,25 @@ class Vector
     
     private $y;
     
-    public function __construct($x, $y, $invert = false)
+    public function __construct($x, $y)
     {
-        $factor = $invert ? -1 : 1;
-        $this->setCoordinates($x * $factor, $y * $factor);
-    }
-    
-    public function multiplyByScalar($val)
-    {
-        $this->setX($this->getX() * $val);
-        $this->sety($this->gety() * $val);
-    }
-    
-    public function setCoordinates($x, $y) {
         $this->setX($x);
         $this->setY($y);
+    }
+    
+    public function addVector(Vector $vector)
+    {
+        return new Vector($this->getX() + $vector->getX(), $this->getY() + $vector->getY());
+    }
+    
+    public function multiplyByScalar($scal)
+    {
+        return new Vector( $this->getX() * $scal, $this->getY() * $scal );
+    }
+    
+    public function setCoordinates(Vector $vector) {
+        $this->setX($vector->getX());
+        $this->setY($vector->getY());
     }
     
     public function getCoordinates()

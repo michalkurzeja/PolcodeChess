@@ -68,8 +68,7 @@ class Pawn extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array(   new Vector(1, 0, $this->getIsWhite()), new Vector(1, 1, $this->getIsWhite()),
-                            new Vector(1, -1, $this->getIsWhite()) );
+        $vectors = array( new Vector(0, 1, $this->getIsWhite()) );
     }
     
     /**
@@ -241,5 +240,33 @@ class Pawn extends Piece
     public function getRow()
     {
         return $this->row;
+    }
+    /**
+     * @var integer
+     */
+    protected $file;
+
+
+    /**
+     * Set file
+     *
+     * @param integer $file
+     * @return Pawn
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    
+        return $this;
+    }
+
+    /**
+     * Get file
+     *
+     * @return integer 
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 }

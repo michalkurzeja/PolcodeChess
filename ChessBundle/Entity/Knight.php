@@ -181,4 +181,32 @@ class Knight extends Piece
     {
         return $this->row;
     }
+    /**
+     * @var integer
+     */
+    protected $file;
+
+
+    /**
+     * Set file
+     *
+     * @param integer $file
+     * @return Knight
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    
+        return $this;
+    }
+
+    /**
+     * Get file
+     *
+     * @return integer 
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
 }

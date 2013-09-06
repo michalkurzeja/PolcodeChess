@@ -42,6 +42,20 @@ class Knight extends Piece
      */
     protected $row;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setMultimove(false);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMoveVectors()
+    { 
+        $vectors = array(   new Vector(2, 1), new Vector(1, 2), new Vector(-1, 2), new Vector(-2, 1),
+                            new Vector(-2, -1), new Vector(-1, -2), new Vector(1, -2), new Vector(2, -1) );
+    }
 
     /**
      * Set is_checking

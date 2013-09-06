@@ -4,6 +4,7 @@ namespace Polcode\ChessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
@@ -50,18 +51,29 @@ abstract class Piece
      * 
      * @var int
      */
-    protected $row;
+    protected $file;
     
     protected $multimove;
 
-    public function __construct($rank, $row, $is_white, $game_id)
+    public function __construct($rank, $file, $is_white, $game_id)
     {
         $this->rank = $this->setRank($rank);
-        $this->row = $this->setRow($row);
+        $this->file = $this->setFile($file);
         $this->is_white = $this->setIsWhite($is_white);
         $this->game_id = $this->setGameId($game_id);
     }
 
+    public function setCoordinates(Vector $vector)
+    {
+        $this->setRank($vector->getX());
+        $this->setFile($vector->getY());
+    }
+    
+    public function getCoordinates()
+    {
+        return new Vector($this->getRank(), $this->getFile());
+    }
+    
     /**
      * @return array
      */
@@ -142,6 +154,29 @@ abstract class Piece
     }
 
     /**
+     * Set has_moved
+     *
+     * @param boolean $hasMoved
+     * @return Piece
+     */
+    public function setHasMoved($hasMoved)
+    {
+        $this->has_moved = $hasMoved;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_moved
+     *
+     * @return boolean 
+     */
+    public function getHasMoved()
+    {
+        return $this->has_moved;
+    }
+
+    /**
      * Set rank
      *
      * @param integer $rank
@@ -165,48 +200,25 @@ abstract class Piece
     }
 
     /**
-     * Set row
+     * Set file
      *
-     * @param integer $row
+     * @param integer $file
      * @return Piece
      */
-    public function setRow($row)
+    public function setFile($file)
     {
-        $this->row = $row;
+        $this->file = $file;
     
         return $this;
     }
 
     /**
-     * Get row
+     * Get file
      *
      * @return integer 
      */
-    public function getRow()
+    public function getFile()
     {
-        return $this->row;
-    }
-
-    /**
-     * Set has_moved
-     *
-     * @param boolean $hasMoved
-     * @return Piece
-     */
-    public function setHasMoved($hasMoved)
-    {
-        $this->has_moved = $hasMoved;
-    
-        return $this;
-    }
-
-    /**
-     * Get has_moved
-     *
-     * @return boolean 
-     */
-    public function getHasMoved()
-    {
-        return $this->has_moved;
+        return $this->file;
     }
 }
