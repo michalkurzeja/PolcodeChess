@@ -4,10 +4,12 @@ namespace Polcode\ChessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Polcode\ChessBundle\Entity\User;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="games")
+ * @UniqueEntity(fields="id")
  */
 class Game
 {
