@@ -23,58 +23,7 @@ class User extends BaseUser
      */
     protected $id;
 	
-	/**
-	 * @ORM\Column(type="string", length=100)
-	 * 
-	 * @var string
-     */
-    protected $username;
 	
-	/**
-	 * @ORM\Column(type="string", length=100)
-	 * 
-     * @var string
-     */
-    protected $email;
-	
-	/** 
-	 * @ORM\Column(type="string", length=32)
-	 *
-     * The salt to use for hashing
-     *
-     * @var string
-     */
-    protected $salt;
-	
-	/**
-     * Encrypted password. Must be persisted.
-     *
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-	 * 
-	 * Plain password. Used for model validation. Must not be persisted.
-     *
-     * @var string
-     */
-    protected $plainPassword;
-	
-	/**
-     * @ORM\Column(type="datetime", nullable=true)
-	 * 
-	 * @var \DateTime
-     */
-    protected $lastLogin;
-	
-	/**
-     * @ORM\Column(type="string", length=30)
-	 * 
-	 * @var array
-     */
-    protected $roles;
 	
 	public function __construct()
     {

@@ -1,8 +1,0 @@
-Polcode\ChessBundle\Entity\User:
-    type:  entity
-    table: chess_user
-    id:
-        id:
-            type: integer
-            generator:
-                strategy: AUTO
