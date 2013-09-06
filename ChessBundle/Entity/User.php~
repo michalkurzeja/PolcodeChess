@@ -22,8 +22,16 @@ class User extends BaseUser
 	 * @var int
      */
     protected $id;
-	
-	
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="white_id")
+     */
+    protected $white_games;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="black_id")
+     */
+    protected $black_games;
 	
 	public function __construct()
     {

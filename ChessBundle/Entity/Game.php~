@@ -24,7 +24,7 @@ class Game
     
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="white_id", referencedColumnName="id")
      * 
      * @var User
      */
@@ -32,7 +32,7 @@ class Game
     
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="black_id", referencedColumnName="id")
      * 
      * @var User
      */
@@ -58,4 +58,129 @@ class Game
      * @var datetime
      */
     protected $end_time;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set white_turn
+     *
+     * @param boolean $whiteTurn
+     * @return Game
+     */
+    public function setWhiteTurn($whiteTurn)
+    {
+        $this->white_turn = $whiteTurn;
+    
+        return $this;
+    }
+
+    /**
+     * Get white_turn
+     *
+     * @return boolean 
+     */
+    public function getWhiteTurn()
+    {
+        return $this->white_turn;
+    }
+
+    /**
+     * Set start_time
+     *
+     * @param \DateTime $startTime
+     * @return Game
+     */
+    public function setStartTime($startTime)
+    {
+        $this->start_time = $startTime;
+    
+        return $this;
+    }
+
+    /**
+     * Get start_time
+     *
+     * @return \DateTime 
+     */
+    public function getStartTime()
+    {
+        return $this->start_time;
+    }
+
+    /**
+     * Set end_time
+     *
+     * @param \DateTime $endTime
+     * @return Game
+     */
+    public function setEndTime($endTime)
+    {
+        $this->end_time = $endTime;
+    
+        return $this;
+    }
+
+    /**
+     * Get end_time
+     *
+     * @return \DateTime 
+     */
+    public function getEndTime()
+    {
+        return $this->end_time;
+    }
+
+    /**
+     * Set white
+     *
+     * @param \Polcode\ChessBundle\Entity\User $white
+     * @return Game
+     */
+    public function setWhite(\Polcode\ChessBundle\Entity\User $white = null)
+    {
+        $this->white = $white;
+    
+        return $this;
+    }
+
+    /**
+     * Get white
+     *
+     * @return \Polcode\ChessBundle\Entity\User 
+     */
+    public function getWhite()
+    {
+        return $this->white;
+    }
+
+    /**
+     * Set black
+     *
+     * @param \Polcode\ChessBundle\Entity\User $black
+     * @return Game
+     */
+    public function setBlack(\Polcode\ChessBundle\Entity\User $black = null)
+    {
+        $this->black = $black;
+    
+        return $this;
+    }
+
+    /**
+     * Get black
+     *
+     * @return \Polcode\ChessBundle\Entity\User 
+     */
+    public function getBlack()
+    {
+        return $this->black;
+    }
 }

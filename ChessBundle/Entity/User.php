@@ -22,8 +22,16 @@ class User extends BaseUser
 	 * @var int
      */
     protected $id;
-	
-	
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="white_id")
+     */
+    protected $white_games;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="black_id")
+     */
+    protected $black_games;
 	
 	public function __construct()
     {
@@ -38,5 +46,76 @@ class User extends BaseUser
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Add white_games
+     *
+     * @param \Polcode\ChessBundle\Entity\Game $whiteGames
+     * @return User
+     */
+    public function addWhiteGame(\Polcode\ChessBundle\Entity\Game $whiteGames)
+    {
+        $this->white_games[] = $whiteGames;
+    
+        return $this;
+    }
+
+    /**
+     * Remove white_games
+     *
+     * @param \Polcode\ChessBundle\Entity\Game $whiteGames
+     */
+    public function removeWhiteGame(\Polcode\ChessBundle\Entity\Game $whiteGames)
+    {
+        $this->white_games->removeElement($whiteGames);
+    }
+
+    /**
+     * Get white_games
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWhiteGames()
+    {
+        return $this->white_games;
+    }
+
+    /**
+     * Add black_games
+     *
+     * @param \Polcode\ChessBundle\Entity\Game $blackGames
+     * @return User
+     */
+    public function addBlackGame(\Polcode\ChessBundle\Entity\Game $blackGames)
+    {
+        $this->black_games[] = $blackGames;
+    
+        return $this;
+    }
+
+    /**
+     * Remove black_games
+     *
+     * @param \Polcode\ChessBundle\Entity\Game $blackGames
+     */
+    public function removeBlackGame(\Polcode\ChessBundle\Entity\Game $blackGames)
+    {
+        $this->black_games->removeElement($blackGames);
+    }
+
+    /**
+     * Get black_games
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getBlackGames()
+    {
+        return $this->black_games;
+    }
+    
+    public function getAllGames()
+    {
+        return array_merge($this->getWhiteGames(), $this->getBlackGames());
     }
 }

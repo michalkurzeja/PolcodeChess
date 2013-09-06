@@ -24,7 +24,7 @@ class Game
     
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="white_id", referencedColumnName="id")
      * 
      * @var User
      */
@@ -32,7 +32,7 @@ class Game
     
     /**
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="black_id", referencedColumnName="id")
      * 
      * @var User
      */
