@@ -55,12 +55,12 @@ abstract class Piece
     
     protected $multimove;
 
-    public function __construct($rank, $file, $is_white, $game_id)
+    public function __construct($file, $rank, $is_white, $game_id)
     {
-        $this->rank = $this->setRank($rank);
-        $this->file = $this->setFile($file);
-        $this->is_white = $this->setIsWhite($is_white);
-        $this->game_id = $this->setGameId($game_id);
+        $this   ->setRank($rank)
+                ->setFile($file)
+                ->setIsWhite($is_white)
+                ->setGameId($game_id);
     }
 
     public function setCoordinates(Vector $vector)

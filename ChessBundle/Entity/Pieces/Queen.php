@@ -42,12 +42,10 @@ class Queen extends Piece
      */
     protected $file;
 
-    public function __construct($file, $rank)
+    public function __construct($file, $rank, $is_white, $game_id)
     {
-        parent::__construct();
-        $this   ->setMultimove(true)
-                ->setFile($file)
-                ->setRank($rank);
+        parent::__construct($file, $rank, $is_white, $game_id);
+        $this   ->setMultimove(true);
     }
 
     /**
