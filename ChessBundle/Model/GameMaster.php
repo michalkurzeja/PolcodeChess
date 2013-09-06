@@ -16,7 +16,7 @@ class GameMaster
     
     private function _init()
     {
-//        $whites = array(new Pawn(););
+        $whites = array( new Pawn() );
         $this->chessboard = new Chessboard();
     }
 }

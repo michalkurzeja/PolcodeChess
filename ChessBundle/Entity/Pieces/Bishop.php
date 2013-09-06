@@ -40,12 +40,14 @@ class Bishop extends Piece
     /**
      * @var integer
      */
-    protected $row;
+    protected $file;
 
-    public function __construct()
+    public function __construct($file, $rank)
     {
         parent::__construct();
-        $this->setMultimove(true);
+        $this   ->setMultimove(true)
+                ->setFile($file)
+                ->setRank($rank);
     }
 
     /**
@@ -157,34 +159,6 @@ class Bishop extends Piece
     {
         return $this->rank;
     }
-
-    /**
-     * Set row
-     *
-     * @param integer $row
-     * @return Bishop
-     */
-    public function setRow($row)
-    {
-        $this->row = $row;
-    
-        return $this;
-    }
-
-    /**
-     * Get row
-     *
-     * @return integer 
-     */
-    public function getRow()
-    {
-        return $this->row;
-    }
-    /**
-     * @var integer
-     */
-    protected $file;
-
 
     /**
      * Set file
