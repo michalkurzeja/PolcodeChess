@@ -5,6 +5,7 @@ namespace Polcode\ChessBundle\Entity;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -36,6 +37,8 @@ class User extends BaseUser
 	public function __construct()
     {
         parent::__construct();
+        $this->white_games = new ArrayCollection();
+        $this->black_games = new ArrayCollection();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Polcode\ChessBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
@@ -55,8 +56,22 @@ class Pawn extends Piece
      * @var integer
      */
     protected $row;
+    
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setMultimove(false);
+    }
 
-
+    /**
+     * @return array
+     */
+    public function getMoveVectors()
+    { 
+        $vectors = array(   new Vector(1, 0, $this->getIsWhite()), new Vector(1, 1, $this->getIsWhite()),
+                            new Vector(1, -1, $this->getIsWhite()) );
+    }
+    
     /**
      * Set is_checking
      *

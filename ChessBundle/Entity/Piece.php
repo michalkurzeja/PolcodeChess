@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\DiscriminatorColumn(name="piece_type", type="string")
  * @ORM\DiscriminatorMap({"piece" = "Piece", "pawn" = "Pawn", "bishop"="Bishop", "knight"="Knight", "rook"="Rook", "queen"="Queen", "king"="King"})
  */
-class Piece
+abstract class Piece
 {
     /**
      * @ORM\Id
@@ -51,8 +51,10 @@ class Piece
      * @var int
      */
     protected $row;
+    
+    protected $multimove;
 
-    function __construct($rank, $row, $is_white, $game_id)
+    public function __construct($rank, $row, $is_white, $game_id)
     {
         $this->rank = $this->setRank($rank);
         $this->row = $this->setRow($row);
@@ -60,6 +62,29 @@ class Piece
         $this->game_id = $this->setGameId($game_id);
     }
 
+    /**
+     * @return array
+     */
+    abstract public function getMoveVectors();
+    
+    /**
+     * @return boolean
+     */
+    public function isMultimove()
+    {
+        return $this->multimove;
+    }
+    
+    /**
+     * @param boolean
+     */
+    public function setMultimove($multimove)
+    {
+        $this->multimove = $multimove;
+        
+        return $this;
+    }
+    
     /**
      * Get id
      *

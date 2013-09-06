@@ -42,6 +42,19 @@ class Queen extends Piece
      */
     protected $row;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setMultimove(true);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMoveVectors()
+    { 
+        $vectors = array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(1, -1) );
+    }
 
     /**
      * Set is_checking
