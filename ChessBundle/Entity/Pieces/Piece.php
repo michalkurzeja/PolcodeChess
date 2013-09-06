@@ -82,7 +82,7 @@ abstract class Piece
     /**
      * @return boolean
      */
-    public function isMultimove()
+    public function getMultimove()
     {
         return $this->multimove;
     }

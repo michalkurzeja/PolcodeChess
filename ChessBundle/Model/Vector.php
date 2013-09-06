@@ -36,14 +36,14 @@ class Vector
     
     public function setX($val)
     {
-        $this->x = $x;
+        $this->x = $val;
         
         return $this;
     }
     
     public function setY($val)
     {
-        $this->y = $y;
+        $this->y = $val;
         
         return $this;
     }
@@ -56,5 +56,10 @@ class Vector
     public function getY()
     {
         return $this->y;
+    }
+    
+    public function __toString()
+    {
+        return "[$this->x, $this->y]";
     }
 }

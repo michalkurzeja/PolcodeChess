@@ -4,7 +4,7 @@ namespace Polcode\ChessBundle\Model;
 
 use Polcode\ChessBundle\Exception\OutOfBoardException;
 use Polcode\ChessBundle\Model\Vector;
-use Polcode\ChessBundle\Entity\Piece;
+use Polcode\ChessBundle\Entity\Pieces\Piece;
 
 class Chessboard
 {
@@ -35,9 +35,22 @@ class Chessboard
         }
     } 
     
+    public function getPieces($color = null)
+    {
+        if($color == 'white') {
+            return $this->whites;
+        }
+        
+        if($color == 'black') {
+            return $this->blacks;
+        }
+        
+        return array_merge($this->whites, $this->blacks);
+    }
+    
     public function isSquareWithinBoard(Vector $square)
     {
-        if($vector[0] < 1 || $vector[0] > 8 || $vector[1] < 1 || $vector[1] > 8) {
+        if($square->getX() < 1 || $square->getX() >8 ||$square->getY() < 1 ||$square->getY() > 8) {
             return false;
         }
         
@@ -54,8 +67,8 @@ class Chessboard
             throw new OutOfBoardException();
         }
         
-        if( isset( $this->board[$square[0] . $square[1]] ) ) {
-            return $this->board[$square[0] . $square[1]];
+        if( isset( $this->board[$square->getX() . $square->getY()] ) ) {
+            return $this->board[$square->getX() . $square->getY()];
         }
         
         return null;

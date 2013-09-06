@@ -8,11 +8,11 @@ use Polcode\ChessBundle\Model\GameMaster;
 class DefaultController extends Controller
 {
     public function indexAction()
-    {
-        $name = 'User';
-        
+    {  
         $gm = new GameMaster();
         
-        return $this->render('PolcodeChessBundle:Default:index.html.twig', array('name' => $name));
+        $pos = $gm->getValidMoves();
+        
+        return $this->render('PolcodeChessBundle:Default:index.html.twig', array('name' => $pos));
     }
 }

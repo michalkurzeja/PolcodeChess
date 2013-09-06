@@ -53,7 +53,7 @@ class Knight extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array(   new Vector(2, 1), new Vector(1, 2), new Vector(-1, 2), new Vector(-2, 1),
+        return array(   new Vector(2, 1), new Vector(1, 2), new Vector(-1, 2), new Vector(-2, 1),
                             new Vector(-2, -1), new Vector(-1, -2), new Vector(1, -2), new Vector(2, -1) );
     }
 

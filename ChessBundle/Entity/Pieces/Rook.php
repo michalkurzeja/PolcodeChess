@@ -53,7 +53,7 @@ class Rook extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 0), new Vector(0, 1) );
+        return array( new Vector(1, 0), new Vector(0, 1) );
     }
 
     /**

@@ -53,7 +53,7 @@ class Bishop extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 1), new Vector(1, -1), new Vector(-1, -1), new Vector(-1, 1) );
+        return array( new Vector(1, 1), new Vector(1, -1), new Vector(-1, -1), new Vector(-1, 1) );
     }
  
     /**

@@ -22,4 +22,20 @@ class GameMaster
                             new Pieces\Rook(1,8,false,1), new Pieces\Queen(4,8,false,1), new Pieces\King(5,8,false,1) );
         $this->chessboard = new Chessboard($whites, $blacks);
     }
+    
+    public function getValidMoves()
+    {
+        $pieces = $this->chessboard->getPieces();
+        $positions = '';
+        
+        foreach($pieces as &$piece) {
+            $positions .= "Piece {$piece->getCoordinates()}:\n";
+            $squares = $this->chessboard->getPieceMoveList($piece);
+            foreach($squares as &$square) {
+                $positions .= "\t{$square}\n";
+            }
+        }
+        
+        return $positions;
+    }
 }
