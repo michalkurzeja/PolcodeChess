@@ -16,6 +16,11 @@ class Chessboard
     
     public function __construct($whites, $blacks)
     {
+        $this->_init($whites, $blacks);
+    }
+    
+    private function _init($whites, $blacks)
+    {
         $this->whites = $whites;
         $this->blacks = $blacks;
         
@@ -28,7 +33,7 @@ class Chessboard
         foreach($blacks as &$piece) {
             $board[$piece->getRank() . $piece->getFile()] = $piece;
         }
-    }
+    } 
     
     public function isSquareWithinBoard(Vector $square)
     {

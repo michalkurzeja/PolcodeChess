@@ -1,16 +1,15 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="pieces")
  */
-class Pawn extends Piece
+class Queen extends Piece
 {
     /**
      * @ORM\Column(type="boolean")
@@ -18,20 +17,6 @@ class Pawn extends Piece
      * @var boolean
      */
     protected $is_checking = false;
-    
-    /**
-     * @ORM\Column(type="boolean")
-     * 
-     * @var boolean
-     */
-    protected $en_passable = false;
-    
-    /**
-     * @ORM\Column(type="boolean")
-     * 
-     * @var boolean
-     */
-    protected $has_moved = false; 
     /**
      * @var integer
      */
@@ -56,11 +41,11 @@ class Pawn extends Piece
      * @var integer
      */
     protected $row;
-    
+
     public function __construct()
     {
         parent::__construct();
-        $this->setMultimove(false);
+        $this->setMultimove(true);
     }
 
     /**
@@ -68,14 +53,14 @@ class Pawn extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(0, 1, $this->getIsWhite()) );
+        $vectors = array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(-1, 1) );
     }
-    
+
     /**
      * Set is_checking
      *
      * @param boolean $isChecking
-     * @return Pawn
+     * @return Queen
      */
     public function setIsChecking($isChecking)
     {
@@ -95,52 +80,6 @@ class Pawn extends Piece
     }
 
     /**
-     * Set en_passable
-     *
-     * @param boolean $enPassable
-     * @return Pawn
-     */
-    public function setEnPassable($enPassable)
-    {
-        $this->en_passable = $enPassable;
-    
-        return $this;
-    }
-
-    /**
-     * Get en_passable
-     *
-     * @return boolean 
-     */
-    public function getEnPassable()
-    {
-        return $this->en_passable;
-    }
-
-    /**
-     * Set has_moved
-     *
-     * @param boolean $hasMoved
-     * @return Pawn
-     */
-    public function setHasMoved($hasMoved)
-    {
-        $this->has_moved = $hasMoved;
-    
-        return $this;
-    }
-
-    /**
-     * Get has_moved
-     *
-     * @return boolean 
-     */
-    public function getHasMoved()
-    {
-        return $this->has_moved;
-    }
-
-    /**
      * Get id
      *
      * @return integer 
@@ -154,7 +93,7 @@ class Pawn extends Piece
      * Set game_id
      *
      * @param integer $gameId
-     * @return Pawn
+     * @return Queen
      */
     public function setGameId($gameId)
     {
@@ -177,7 +116,7 @@ class Pawn extends Piece
      * Set is_white
      *
      * @param boolean $isWhite
-     * @return Pawn
+     * @return Queen
      */
     public function setIsWhite($isWhite)
     {
@@ -200,7 +139,7 @@ class Pawn extends Piece
      * Set rank
      *
      * @param integer $rank
-     * @return Pawn
+     * @return Queen
      */
     public function setRank($rank)
     {
@@ -223,7 +162,7 @@ class Pawn extends Piece
      * Set row
      *
      * @param integer $row
-     * @return Pawn
+     * @return Queen
      */
     public function setRow($row)
     {
@@ -251,7 +190,7 @@ class Pawn extends Piece
      * Set file
      *
      * @param integer $file
-     * @return Pawn
+     * @return Queen
      */
     public function setFile($file)
     {

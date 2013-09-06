@@ -1,15 +1,16 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="pieces")
  */
-class Rook extends Piece
+class Pawn extends Piece
 {
     /**
      * @ORM\Column(type="boolean")
@@ -17,6 +18,20 @@ class Rook extends Piece
      * @var boolean
      */
     protected $is_checking = false;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     * 
+     * @var boolean
+     */
+    protected $en_passable = false;
+    
+    /**
+     * @ORM\Column(type="boolean")
+     * 
+     * @var boolean
+     */
+    protected $has_moved = false; 
     /**
      * @var integer
      */
@@ -41,11 +56,11 @@ class Rook extends Piece
      * @var integer
      */
     protected $row;
-
+    
     public function __construct()
     {
         parent::__construct();
-        $this->setMultimove(true);
+        $this->setMultimove(false);
     }
 
     /**
@@ -53,14 +68,14 @@ class Rook extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 0), new Vector(0, 1) );
+        $vectors = array( new Vector(0, 1, $this->getIsWhite()) );
     }
-
+    
     /**
      * Set is_checking
      *
      * @param boolean $isChecking
-     * @return Rook
+     * @return Pawn
      */
     public function setIsChecking($isChecking)
     {
@@ -80,6 +95,52 @@ class Rook extends Piece
     }
 
     /**
+     * Set en_passable
+     *
+     * @param boolean $enPassable
+     * @return Pawn
+     */
+    public function setEnPassable($enPassable)
+    {
+        $this->en_passable = $enPassable;
+    
+        return $this;
+    }
+
+    /**
+     * Get en_passable
+     *
+     * @return boolean 
+     */
+    public function getEnPassable()
+    {
+        return $this->en_passable;
+    }
+
+    /**
+     * Set has_moved
+     *
+     * @param boolean $hasMoved
+     * @return Pawn
+     */
+    public function setHasMoved($hasMoved)
+    {
+        $this->has_moved = $hasMoved;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_moved
+     *
+     * @return boolean 
+     */
+    public function getHasMoved()
+    {
+        return $this->has_moved;
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -93,7 +154,7 @@ class Rook extends Piece
      * Set game_id
      *
      * @param integer $gameId
-     * @return Rook
+     * @return Pawn
      */
     public function setGameId($gameId)
     {
@@ -116,7 +177,7 @@ class Rook extends Piece
      * Set is_white
      *
      * @param boolean $isWhite
-     * @return Rook
+     * @return Pawn
      */
     public function setIsWhite($isWhite)
     {
@@ -139,7 +200,7 @@ class Rook extends Piece
      * Set rank
      *
      * @param integer $rank
-     * @return Rook
+     * @return Pawn
      */
     public function setRank($rank)
     {
@@ -162,7 +223,7 @@ class Rook extends Piece
      * Set row
      *
      * @param integer $row
-     * @return Rook
+     * @return Pawn
      */
     public function setRow($row)
     {
@@ -190,7 +251,7 @@ class Rook extends Piece
      * Set file
      *
      * @param integer $file
-     * @return Rook
+     * @return Pawn
      */
     public function setFile($file)
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -9,14 +9,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity
  * @ORM\Table(name="pieces")
  */
-class Queen extends Piece
-{
+class King extends Piece
+{   
     /**
      * @ORM\Column(type="boolean")
      * 
      * @var boolean
      */
-    protected $is_checking = false;
+    protected $has_moved = false; 
     /**
      * @var integer
      */
@@ -45,7 +45,7 @@ class Queen extends Piece
     public function __construct()
     {
         parent::__construct();
-        $this->setMultimove(true);
+        $this->setMultimove(false);
     }
 
     /**
@@ -53,30 +53,31 @@ class Queen extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(-1, 1) );
+        $vectors = array(   new Vector(1, 0), new Vector(1, 1), new Vector(0, 1), new Vector(-1, 1), 
+                            new Vector(-1, 0), new Vector(-1, -1), new Vector(0, -1), new Vector(1, -1) );
     }
 
     /**
-     * Set is_checking
+     * Set has_moved
      *
-     * @param boolean $isChecking
-     * @return Queen
+     * @param boolean $hasMoved
+     * @return King
      */
-    public function setIsChecking($isChecking)
+    public function setHasMoved($hasMoved)
     {
-        $this->is_checking = $isChecking;
+        $this->has_moved = $hasMoved;
     
         return $this;
     }
 
     /**
-     * Get is_checking
+     * Get has_moved
      *
      * @return boolean 
      */
-    public function getIsChecking()
+    public function getHasMoved()
     {
-        return $this->is_checking;
+        return $this->has_moved;
     }
 
     /**
@@ -93,7 +94,7 @@ class Queen extends Piece
      * Set game_id
      *
      * @param integer $gameId
-     * @return Queen
+     * @return King
      */
     public function setGameId($gameId)
     {
@@ -116,7 +117,7 @@ class Queen extends Piece
      * Set is_white
      *
      * @param boolean $isWhite
-     * @return Queen
+     * @return King
      */
     public function setIsWhite($isWhite)
     {
@@ -139,7 +140,7 @@ class Queen extends Piece
      * Set rank
      *
      * @param integer $rank
-     * @return Queen
+     * @return King
      */
     public function setRank($rank)
     {
@@ -162,7 +163,7 @@ class Queen extends Piece
      * Set row
      *
      * @param integer $row
-     * @return Queen
+     * @return King
      */
     public function setRow($row)
     {
@@ -190,7 +191,7 @@ class Queen extends Piece
      * Set file
      *
      * @param integer $file
-     * @return Queen
+     * @return King
      */
     public function setFile($file)
     {

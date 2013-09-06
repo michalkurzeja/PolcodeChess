@@ -1,6 +1,6 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity
  * @ORM\Table(name="pieces")
  */
-class Bishop extends Piece
+class Rook extends Piece
 {
     /**
      * @ORM\Column(type="boolean")
@@ -53,14 +53,14 @@ class Bishop extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 1), new Vector(-1, 1) );
+        $vectors = array( new Vector(1, 0), new Vector(0, 1) );
     }
- 
+
     /**
      * Set is_checking
      *
      * @param boolean $isChecking
-     * @return Bishop
+     * @return Rook
      */
     public function setIsChecking($isChecking)
     {
@@ -93,7 +93,7 @@ class Bishop extends Piece
      * Set game_id
      *
      * @param integer $gameId
-     * @return Bishop
+     * @return Rook
      */
     public function setGameId($gameId)
     {
@@ -116,7 +116,7 @@ class Bishop extends Piece
      * Set is_white
      *
      * @param boolean $isWhite
-     * @return Bishop
+     * @return Rook
      */
     public function setIsWhite($isWhite)
     {
@@ -139,7 +139,7 @@ class Bishop extends Piece
      * Set rank
      *
      * @param integer $rank
-     * @return Bishop
+     * @return Rook
      */
     public function setRank($rank)
     {
@@ -162,7 +162,7 @@ class Bishop extends Piece
      * Set row
      *
      * @param integer $row
-     * @return Bishop
+     * @return Rook
      */
     public function setRow($row)
     {
@@ -190,7 +190,7 @@ class Bishop extends Piece
      * Set file
      *
      * @param integer $file
-     * @return Bishop
+     * @return Rook
      */
     public function setFile($file)
     {
