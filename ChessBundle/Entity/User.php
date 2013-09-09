@@ -81,7 +81,7 @@ class User extends BaseUser
      */
     public function getWhiteGames()
     {
-        return $this->white_games;
+        return $this->white_games->getValues();
     }
 
     /**
@@ -114,7 +114,7 @@ class User extends BaseUser
      */
     public function getBlackGames()
     {
-        return $this->black_games;
+        return $this->black_games->getValues();
     }
     
     public function getAllGames()

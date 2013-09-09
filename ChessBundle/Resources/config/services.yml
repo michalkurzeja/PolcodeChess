@@ -4,4 +4,4 @@ parameters:
 services:
     GameMaster:
         class: Polcode\ChessBundle\Model\GameMaster
-        arguments: [@doctrine.orm.entity_manager]
+        arguments: [@doctrine.orm.entity_manager, @templating]

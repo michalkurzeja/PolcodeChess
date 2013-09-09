@@ -1,6 +1,6 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -55,12 +55,12 @@ class Pawn extends Piece
     /**
      * @var integer
      */
-    protected $row;
+    protected $file;
     
-    public function __construct()
+    public function __construct($file, $rank, $is_white, $game_id)
     {
-        parent::__construct();
-        $this->setMultimove(false);
+        parent::__construct($file, $rank, $is_white, $game_id);
+        $this   ->setMultimove(false);
     }
 
     /**
@@ -68,8 +68,7 @@ class Pawn extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array(   new Vector(1, 0, $this->getIsWhite()), new Vector(1, 1, $this->getIsWhite()),
-                            new Vector(1, -1, $this->getIsWhite()) );
+        return array( new Vector(0, $this->getIsWhite() ? 1 : -1) );
     }
     
     /**
@@ -221,25 +220,25 @@ class Pawn extends Piece
     }
 
     /**
-     * Set row
+     * Set file
      *
-     * @param integer $row
+     * @param integer $file
      * @return Pawn
      */
-    public function setRow($row)
+    public function setFile($file)
     {
-        $this->row = $row;
+        $this->file = $file;
     
         return $this;
     }
 
     /**
-     * Get row
+     * Get file
      *
      * @return integer 
      */
-    public function getRow()
+    public function getFile()
     {
-        return $this->row;
+        return $this->file;
     }
 }

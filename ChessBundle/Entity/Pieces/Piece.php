@@ -26,11 +26,12 @@ abstract class Piece
     protected $id;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Polcode\ChessBundle\Entity\Game", inversedBy="pieces")
+     * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
      * 
-     * @var int
+     * @var Game
      */
-    protected $game_id;
+    protected $game;
     
     /**
      * @ORM\Column(type="boolean")
@@ -55,12 +56,12 @@ abstract class Piece
     
     protected $multimove;
 
-    public function __construct($file, $rank, $is_white, $game_id)
+    public function __construct($file, $rank, $is_white, $game)
     {
         $this   ->setRank($rank)
                 ->setFile($file)
                 ->setIsWhite($is_white)
-                ->setGameId($game_id);
+                ->setGame($game);
     }
 
     public function setCoordinates(Vector $vector)
@@ -105,29 +106,6 @@ abstract class Piece
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set game_id
-     *
-     * @param integer $gameId
-     * @return Piece
-     */
-    public function setGameId($gameId)
-    {
-        $this->game_id = $gameId;
-    
-        return $this;
-    }
-
-    /**
-     * Get game_id
-     *
-     * @return integer 
-     */
-    public function getGameId()
-    {
-        return $this->game_id;
     }
 
     /**
@@ -226,5 +204,28 @@ abstract class Piece
     {
         $name = get_class($this);
         return ($this->getIsWhite() ? 'White ' : 'Black ') . substr($name, strrpos($name, '\\')+1) . $this->getCoordinates();
+    }
+
+    /**
+     * Set game
+     *
+     * @param \Polcode\ChessBundle\Entity\Game $game
+     * @return Piece
+     */
+    public function setGame(\Polcode\ChessBundle\Entity\Game $game = null)
+    {
+        $this->game = $game;
+    
+        return $this;
+    }
+
+    /**
+     * Get game
+     *
+     * @return \Polcode\ChessBundle\Entity\Game 
+     */
+    public function getGame()
+    {
+        return $this->game;
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
@@ -25,11 +26,12 @@ abstract class Piece
     protected $id;
     
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Polcode\ChessBundle\Entity\Game", inversedBy="pieces")
+     * @ORM\JoinColumn(name="game_id", referencedColumnName="id")
      * 
      * @var int
      */
-    protected $game_id;
+    protected $game;
     
     /**
      * @ORM\Column(type="boolean")
@@ -54,13 +56,25 @@ abstract class Piece
     
     protected $multimove;
 
-    public function __construct($rank, $file, $is_white, $game_id)
+    public function __construct($file, $rank, $is_white, $game_id)
     {
-
-        $this->is_white = $this->setIsWhite($is_white);
-        $this->game_id = $this->setGameId($game_id);
+        $this   ->setRank($rank)
+                ->setFile($file)
+                ->setIsWhite($is_white)
+                ->setGameId($game_id);
     }
 
+    public function setCoordinates(Vector $vector)
+    {
+        $this->setRank($vector->getY());
+        $this->setFile($vector->getX());
+    }
+    
+    public function getCoordinates()
+    {
+        return new Vector( $this->getFile(), $this->getRank() );
+    }
+    
     /**
      * @return array
      */
@@ -69,7 +83,7 @@ abstract class Piece
     /**
      * @return boolean
      */
-    public function isMultimove()
+    public function getMultimove()
     {
         return $this->multimove;
     }
@@ -92,29 +106,6 @@ abstract class Piece
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set game_id
-     *
-     * @param integer $gameId
-     * @return Piece
-     */
-    public function setGameId($gameId)
-    {
-        $this->game_id = $gameId;
-    
-        return $this;
-    }
-
-    /**
-     * Get game_id
-     *
-     * @return integer 
-     */
-    public function getGameId()
-    {
-        return $this->game_id;
     }
 
     /**
@@ -161,5 +152,57 @@ abstract class Piece
     public function getHasMoved()
     {
         return $this->has_moved;
+    }
+
+    /**
+     * Set rank
+     *
+     * @param integer $rank
+     * @return Piece
+     */
+    public function setRank($rank)
+    {
+        $this->rank = $rank;
+    
+        return $this;
+    }
+
+    /**
+     * Get rank
+     *
+     * @return integer 
+     */
+    public function getRank()
+    {
+        return $this->rank;
+    }
+
+    /**
+     * Set file
+     *
+     * @param integer $file
+     * @return Piece
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+    
+        return $this;
+    }
+
+    /**
+     * Get file
+     *
+     * @return integer 
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+    
+    public function __toString()
+    {
+        $name = get_class($this);
+        return ($this->getIsWhite() ? 'White ' : 'Black ') . substr($name, strrpos($name, '\\')+1) . $this->getCoordinates();
     }
 }

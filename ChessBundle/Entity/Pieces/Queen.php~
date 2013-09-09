@@ -1,9 +1,10 @@
 <?php
 
-namespace Polcode\ChessBundle\Entity;
+namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
@@ -40,12 +41,12 @@ class Queen extends Piece
     /**
      * @var integer
      */
-    protected $row;
+    protected $file;
 
-    public function __construct()
+    public function __construct($file, $rank, $is_white, $game_id)
     {
-        parent::__construct();
-        $this->setMultimove(true);
+        parent::__construct($file, $rank, $is_white, $game_id);
+        $this   ->setMultimove(true);
     }
 
     /**
@@ -53,7 +54,8 @@ class Queen extends Piece
      */
     public function getMoveVectors()
     { 
-        $vectors = array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(1, -1) );
+        return array(   new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(-1, 1),
+                        new Vector(-1, 0), new Vector(0, -1), new Vector(-1, -1), new Vector(1, -1) );
     }
 
     /**
@@ -159,25 +161,25 @@ class Queen extends Piece
     }
 
     /**
-     * Set row
+     * Set file
      *
-     * @param integer $row
+     * @param integer $file
      * @return Queen
      */
-    public function setRow($row)
+    public function setFile($file)
     {
-        $this->row = $row;
+        $this->file = $file;
     
         return $this;
     }
 
     /**
-     * Get row
+     * Get file
      *
      * @return integer 
      */
-    public function getRow()
+    public function getFile()
     {
-        return $this->row;
+        return $this->file;
     }
 }

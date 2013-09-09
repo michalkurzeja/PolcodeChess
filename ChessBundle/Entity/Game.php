@@ -5,6 +5,7 @@ namespace Polcode\ChessBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Polcode\ChessBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Entity\Pieces;
 
 /**
  * @ORM\Entity
@@ -46,7 +47,7 @@ class Game
     protected $white_turn;
     
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      * 
      * @var datetime
      */
@@ -58,6 +59,13 @@ class Game
      * @var datetime
      */
     protected $end_time;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Polcode\ChessBundle\Entity\Pieces\Piece", mappedBy="game")
+     * 
+     * @var Piece
+     */
+    protected $pieces;
 
     /**
      * Get id
@@ -182,5 +190,45 @@ class Game
     public function getBlack()
     {
         return $this->black;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->pieces = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add pieces
+     *
+     * @param \Polcode\ChessBundle\Entity\Pieces\Piece $pieces
+     * @return Game
+     */
+    public function addPiece(\Polcode\ChessBundle\Entity\Pieces\Piece $pieces)
+    {
+        $this->pieces[] = $pieces;
+    
+        return $this;
+    }
+
+    /**
+     * Remove pieces
+     *
+     * @param \Polcode\ChessBundle\Entity\Pieces\Piece $pieces
+     */
+    public function removePiece(\Polcode\ChessBundle\Entity\Pieces\Piece $pieces)
+    {
+        $this->pieces->removeElement($pieces);
+    }
+
+    /**
+     * Get pieces
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPieces()
+    {
+        return $this->pieces;
     }
 }

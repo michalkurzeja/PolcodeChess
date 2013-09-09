@@ -26,7 +26,7 @@ class Rook extends Piece
     /**
      * @var integer
      */
-    protected $game_id;
+    protected $game;
 
     /**
      * @var boolean
@@ -43,9 +43,9 @@ class Rook extends Piece
      */
     protected $file;
 
-    public function __construct($file, $rank, $is_white, $game_id)
+    public function __construct($file, $rank, $is_white, $game)
     {
-        parent::__construct($file, $rank, $is_white, $game_id);
+        parent::__construct($file, $rank, $is_white, $game);
         $this   ->setMultimove(true);
     }
 
@@ -88,29 +88,6 @@ class Rook extends Piece
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set game_id
-     *
-     * @param integer $gameId
-     * @return Rook
-     */
-    public function setGameId($gameId)
-    {
-        $this->game_id = $gameId;
-    
-        return $this;
-    }
-
-    /**
-     * Get game_id
-     *
-     * @return integer 
-     */
-    public function getGameId()
-    {
-        return $this->game_id;
     }
 
     /**
@@ -180,5 +157,28 @@ class Rook extends Piece
     public function getFile()
     {
         return $this->file;
+    }
+
+    /**
+     * Set game
+     *
+     * @param \Polcode\ChessBundle\Entity\Game $game
+     * @return Rook
+     */
+    public function setGame(\Polcode\ChessBundle\Entity\Game $game = null)
+    {
+        $this->game = $game;
+    
+        return $this;
+    }
+
+    /**
+     * Get game
+     *
+     * @return \Polcode\ChessBundle\Entity\Game 
+     */
+    public function getGame()
+    {
+        return $this->game;
     }
 }

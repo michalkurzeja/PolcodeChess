@@ -4,36 +4,95 @@ namespace Polcode\ChessBundle\Model;
 
 use Polcode\ChessBundle\Model\Chessboard;
 use Polcode\ChessBundle\Entity\Pieces;
+use Polcode\ChessBundle\Entity\Game;
 
 class GameMaster
 {
+    private $game;
     private $chessboard;
     private $em;
-    private $game_id;
+    private $templating;
     
-    public function __construct($em)
+    public function __construct($em, $templating)
     {
         $this->em = $em;
-        $this->_init();
+        $this->templating = $templating;
     }
     
-    private function _init()
+    public function createNewGame($user)
     {
-        $whites = array( $this->createPiece('Rook', 3, 2, true, 1) );
-        $blacks = array( $this->createPiece('Bishop', 3, 5, false, 1) );
-        // $whites = array(    new Pieces\Pawn(2,2,true,1), new Pieces\Bishop(3,1,true,1), new Pieces\Knight(2,1,true,1),
-                            // new Pieces\Rook(1,1,true,1), new Pieces\Queen(4,1,true,1), new Pieces\King(5,1,true,1) );
-        // $blacks = array(    new Pieces\Pawn(2,7,false,1), new Pieces\Bishop(3,8,false,1), new Pieces\Knight(2,8,false,1),
-                            // new Pieces\Rook(1,8,false,1), new Pieces\Queen(4,8,false,1), new Pieces\King(5,8,false,1) );
+        $this->game = new Game();
+        $this->game   ->setWhite($user)
+                ->setWhiteTurn(true);
+        
+        $this->em->persist($this->game);
+        $this->em->flush();
+        
+        $this->dev_starting_pos($this->game);
+        $this->em->flush();
+        
+        return $this->game->getId();
+    }
+    
+    public function getGameState($user, $game_id)
+    {
+        $this->game = $this->getUserGameById($user, $game_id);
+        
+        if( !$this->game ) {
+            return 'You\'re not allowed to view this game!';
+        }
+        
+        $this->chessboard = $this->getChessboardFromDb($game_id);
+    }
+    
+    public function getChessboardFromDb($game)
+    {
+       
+    }
+    
+    public function dev_starting_pos($game)
+    {
+        $whites = array(    $this->createPiece('Queen', 5, 1, true, $game),
+                            $this->createPiece('Pawn', 1, 2, true, $game) );
+        $blacks = array(    $this->createPiece('Queen', 5, 8, false, $game),
+                            $this->createPiece('Pawn', 1, 7, false, $game) );
+                            
+        $this->chessboard = new Chessboard($whites, $blacks);
+    }
+    
+    public function generateStartingPositions($game)
+    {
+        $whites = array( 
+            $this->createPiece('King', 4, 1, true, $game),
+            $this->createPiece('Queen', 5, 1, true, $game),
+            $this->createPiece('Bishop', 3, 1, true, $game), $this->createPiece('Bishop', 6, 1, true, $game),
+            $this->createPiece('Knight', 2, 1, true, $game), $this->createPiece('Knight', 7, 1, true, $game),
+            $this->createPiece('Rook', 1, 1, true, $game), $this->createPiece('Rook', 8, 1, true, $game)   
+        );
+
+        $blacks = array( 
+            $this->createPiece('King', 4, 8, false, $game),
+            $this->createPiece('Queen', 5, 8, false, $game),
+            $this->createPiece('Bishop', 3, 8, false, $game), $this->createPiece('Bishop', 6, 8, false, $game),
+            $this->createPiece('Knight', 2, 8, false, $game), $this->createPiece('Knight', 7, 8, false, $game),
+            $this->createPiece('Rook', 1, 8, false, $game), $this->createPiece('Rook', 8, 8, false, $game)   
+        );
+
+        for($i=1; $i<=8; $i++) {
+            $whites[] =  $this->createPiece('Pawn', $i, 2, true, $game);
+            $blacks[] =  $this->createPiece('Pawn', $i, 7, false, $game);
+        }
 
         $this->chessboard = new Chessboard($whites, $blacks);
     }
     
-    public function createPiece($class, $file, $rank, $is_white, $game_id)
+    public function createPiece($class, $file, $rank, $is_white, $game)
     {
         $full_class = "Polcode\\ChessBundle\\Entity\\Pieces\\$class";
         
-        $piece = new $full_class($file, $rank, $is_white, $game_id);
+        $piece = new $full_class($file, $rank, $is_white, $game);
+        
+        $this->em->persist($piece);
         
         return $piece;
     }
@@ -54,15 +113,26 @@ class GameMaster
         return $positions;
     }
     
-    public function setGameId($id)
+    public function getUserGameById($user, $game_id)
     {
-        $this->game_id = $id;
+        foreach($user->getAllGames() as $game) {
+            if($game->getId() == $game_id) {
+                return $game;
+            }
+        }
+        
+        return false;
+    }
+    
+    public function setGame($game)
+    {
+        $this->game = $game;
         
         return $this;
     }
     
     public function getGameId()
     {
-        return $this->game_id;
+        return $this->game;
     }
 }
