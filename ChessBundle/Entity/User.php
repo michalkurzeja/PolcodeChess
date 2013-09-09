@@ -25,12 +25,12 @@ class User extends BaseUser
     protected $id;
     
     /**
-     * @ORM\OneToMany(targetEntity="Game", mappedBy="white_id")
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="white")
      */
     protected $white_games;
     
     /**
-     * @ORM\OneToMany(targetEntity="Game", mappedBy="black_id")
+     * @ORM\OneToMany(targetEntity="Game", mappedBy="black")
      */
     protected $black_games;
 	

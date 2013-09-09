@@ -83,12 +83,11 @@ class Chessboard
                 $square = $piece->getCoordinates()->addVector($vector);
                 try{
                     while( null === $this->getSquareContent($square) ) { /* add empty squares */
-                        print "adding $square\n";
                         $squares[] = clone $square;
                         $square->setCoordinates($square->addVector($vector));
                     }
                     $squares[] = $square; /* add square occupied by another piece */
-                } catch(OutOfBoardException $e) {print "OOB";} /* the end of the board has been reached */
+                } catch(OutOfBoardException $e) {} /* the end of the board has been reached */
             }
             
             return $squares;

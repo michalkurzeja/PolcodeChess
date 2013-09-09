@@ -2,6 +2,6 @@ parameters:
 #    polcode_chess.example.class: Polcode\ChessBundle\Example
 
 services:
-#    polcode_chess.example:
-#        class: %polcode_chess.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    GameMaster:
+        class: Polcode\ChessBundle\Model\GameMaster
+        arguments: [@doctrine.orm.entity_manager]

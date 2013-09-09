@@ -9,7 +9,8 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {  
-        $gm = new GameMaster();
+        $gm = $this->get('GameMaster');
+        $gm->setGameId(1);
         
         $pos = $gm->getValidMoves();
         

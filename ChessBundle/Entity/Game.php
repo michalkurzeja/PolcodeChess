@@ -23,7 +23,7 @@ class Game
     protected $id;
     
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="white_games")
      * @ORM\JoinColumn(name="white_id", referencedColumnName="id")
      * 
      * @var User
@@ -31,7 +31,7 @@ class Game
     protected $white;
     
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="black_games")
      * @ORM\JoinColumn(name="black_id", referencedColumnName="id")
      * 
      * @var User
