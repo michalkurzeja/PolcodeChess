@@ -26,7 +26,6 @@ class GameMaster
                 ->setWhiteTurn(true);
         
         $this->em->persist($this->game);
-        $this->em->flush();
         
         $this->dev_starting_pos($this->game);
         $this->em->flush();
@@ -42,12 +41,14 @@ class GameMaster
             return 'You\'re not allowed to view this game!';
         }
         
-        $this->chessboard = $this->getChessboardFromDb($game_id);
+        $this->chessboard = $this->getChessboardFromDb($this->game);
+        
+        return $this->getValidMoves();
     }
     
     public function getChessboardFromDb($game)
     {
-       
+        return new Chessboard($game->getWhitePieces()->getValues(), $game->getBlackPieces()->getValues());
     }
     
     public function dev_starting_pos($game)

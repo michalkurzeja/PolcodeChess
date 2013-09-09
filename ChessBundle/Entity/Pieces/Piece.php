@@ -54,6 +54,11 @@ abstract class Piece
      */
     protected $file;
     
+    /**
+     * @ORM\Column(type="boolean")
+     * 
+     * @var boolean
+     */
     protected $multimove;
 
     public function __construct($file, $rank, $is_white, $game)

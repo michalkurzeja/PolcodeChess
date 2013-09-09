@@ -25,8 +25,7 @@ class GameController extends Controller
     {
         $gm = $this->get('GameMaster');
         
-       $cont = $gm->getGameState( $this->getUser(), $game_id );
-        
+        $cont = $gm->getGameState( $this->getUser(), $game_id );
         
         return $this->render('PolcodeChessBundle:Game:game.html.twig', array('content' => $cont));
     }

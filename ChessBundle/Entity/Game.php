@@ -231,4 +231,18 @@ class Game
     {
         return $this->pieces;
     }
+    
+    public function getWhitePieces()
+    {
+        return $this->pieces->filter(function($elem) {
+             return $elem->getIsWhite(); 
+        });
+    }
+    
+    public function getBlackPieces()
+    {
+        return $this->pieces->filter(function($elem) {
+             return !$elem->getIsWhite(); 
+        });
+    }
 }

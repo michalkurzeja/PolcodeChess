@@ -11,5 +11,5 @@ join_game:
     defaults: { _controller: PolcodeChessBundle:Game:join }
     
 display:
-    pattern: /display/{game_id}
+    pattern: /game/{game_id}
     defaults: { _controller: PolcodeChessBundle:Game:display }
