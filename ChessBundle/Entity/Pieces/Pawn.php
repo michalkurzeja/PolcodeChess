@@ -68,7 +68,7 @@ class Pawn extends Piece
      */
     public function getMoveVectors()
     { 
-        return array( new Vector(0, 1, $this->getIsWhite()) );
+        return array( new Vector(0, $this->getIsWhite() ? 1 : -1) );
     }
     
     /**

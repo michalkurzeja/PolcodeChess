@@ -27,11 +27,11 @@ class Chessboard
         $this->board = array();
         
         foreach($whites as &$piece) {
-            $board[$piece->getRank() . $piece->getFile()] = $piece;
+            $this->board[$piece->getFile() . $piece->getRank()] = $piece;
         }
 
         foreach($blacks as &$piece) {
-            $board[$piece->getRank() . $piece->getFile()] = $piece;
+            $this->board[$piece->getFile() . $piece->getRank()] = $piece;
         }
     } 
     
@@ -50,7 +50,7 @@ class Chessboard
     
     public function isSquareWithinBoard(Vector $square)
     {
-        if($square->getX() < 1 || $square->getX() >8 ||$square->getY() < 1 ||$square->getY() > 8) {
+        if($square->getX() < 1 || $square->getX() > 8 ||$square->getY() < 1 ||$square->getY() > 8) {
             return false;
         }
         
@@ -63,7 +63,7 @@ class Chessboard
      */
     public function getSquareContent(Vector $square)
     {
-        if( $this->isSquareWithinBoard($square) ) {
+        if( !$this->isSquareWithinBoard($square) ) {
             throw new OutOfBoardException();
         }
         
@@ -83,11 +83,12 @@ class Chessboard
                 $square = $piece->getCoordinates()->addVector($vector);
                 try{
                     while( null === $this->getSquareContent($square) ) { /* add empty squares */
-                        $squares[] = $square;
+                        print "adding $square\n";
+                        $squares[] = clone $square;
                         $square->setCoordinates($square->addVector($vector));
                     }
                     $squares[] = $square; /* add square occupied by another piece */
-                } catch(OutOfBoardException $e) { /* the end of the board has been reached */ }
+                } catch(OutOfBoardException $e) {print "OOB";} /* the end of the board has been reached */
             }
             
             return $squares;

@@ -2,6 +2,6 @@
 
 namespace Polcode\ChessBundle\Exception;
 
-class OutOfBoardException extends Exception
+class OutOfBoardException extends \Exception
 {
 }

@@ -25,8 +25,8 @@ class Vector
     }
     
     public function setCoordinates(Vector $vector) {
-        $this->setX($vector->getX());
-        $this->setY($vector->getY());
+        $this   ->setX( $vector->getX() )
+                ->setY( $vector->getY() );
     }
     
     public function getCoordinates()
@@ -60,6 +60,6 @@ class Vector
     
     public function __toString()
     {
-        return "[$this->x, $this->y]";
+        return '[' . $this->getX() . ',' . $this->getY() . ']';
     }
 }

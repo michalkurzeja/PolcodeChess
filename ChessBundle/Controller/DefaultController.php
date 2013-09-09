@@ -13,6 +13,6 @@ class DefaultController extends Controller
         
         $pos = $gm->getValidMoves();
         
-        return $this->render('PolcodeChessBundle:Default:index.html.twig', array('name' => $pos));
+        return $this->render('PolcodeChessBundle:Default:index.html.twig', array('content' => $pos));
     }
 }

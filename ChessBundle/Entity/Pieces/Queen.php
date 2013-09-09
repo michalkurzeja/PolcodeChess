@@ -4,6 +4,7 @@ namespace Polcode\ChessBundle\Entity\Pieces;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Polcode\ChessBundle\Model\Vector;
 
 /**
  * @ORM\Entity
@@ -53,7 +54,8 @@ class Queen extends Piece
      */
     public function getMoveVectors()
     { 
-        return array( new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(-1, 1) );
+        return array(   new Vector(1, 0), new Vector(0, 1), new Vector(1, 1), new Vector(-1, 1),
+                        new Vector(-1, 0), new Vector(0, -1), new Vector(-1, -1), new Vector(1, -1) );
     }
 
     /**

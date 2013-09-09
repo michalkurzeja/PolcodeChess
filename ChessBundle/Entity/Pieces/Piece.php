@@ -65,13 +65,13 @@ abstract class Piece
 
     public function setCoordinates(Vector $vector)
     {
-        $this->setRank($vector->getX());
-        $this->setFile($vector->getY());
+        $this->setRank($vector->getY());
+        $this->setFile($vector->getX());
     }
     
     public function getCoordinates()
     {
-        return new Vector($this->getRank(), $this->getFile());
+        return new Vector( $this->getFile(), $this->getRank() );
     }
     
     /**
@@ -220,5 +220,11 @@ abstract class Piece
     public function getFile()
     {
         return $this->file;
+    }
+    
+    public function __toString()
+    {
+        $name = get_class($this);
+        return ($this->getIsWhite() ? 'White ' : 'Black ') . substr($name, strrpos($name, '\\')+1) . $this->getCoordinates();
     }
 }
