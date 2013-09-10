@@ -5,6 +5,7 @@ namespace Polcode\ChessBundle\Model;
 use Polcode\ChessBundle\Model\Chessboard;
 use Polcode\ChessBundle\Entity\Pieces;
 use Polcode\ChessBundle\Entity\Game;
+use Polcode\ChessBundle\Exception\NotYourGameException;
 
 class GameMaster
 {
@@ -17,6 +18,35 @@ class GameMaster
     {
         $this->em = $em;
         $this->templating = $templating;
+    }
+    
+    public function getPieceArray($piece, $moves)
+    {
+        foreach($moves as $index => $square) {
+            $moves[$index] = $square->toArray();
+        }
+        
+        return array(
+            'class' => $piece->getPieceName(),
+            'id' => $piece->getId(),
+            'file' => $piece->getFile(),
+            'rank' => $piece->getRank(),
+            'is_white' => $piece->getIsWhite(),
+            'moves' => $moves
+        );
+        
+    }
+    
+    public function getAllPiecesArray()
+    {
+        $pieces = $this->chessboard->getPieces();
+        $pieces_array = array();
+        
+        foreach($pieces as $piece) {
+            $pieces_array[] = $this->getPieceArray($piece, $this->getValidMoves($piece));
+        }
+        
+        return $pieces_array;
     }
     
     public function createNewGame($user)
@@ -33,17 +63,26 @@ class GameMaster
         return $this->game->getId();
     }
     
-    public function getGameState($user, $game_id)
+    public function getGamePieces($user, $game_id)
     {
-        $this->game = $this->getUserGameById($user, $game_id);
+        try {
+            $this->loadGameState($user, $game_id);
+        } catch(NotYourGameException $e) {
+            throw $e;
+        }        
         
-        if( !$this->game ) {
-            return 'You\'re not allowed to view this game!';
+        return $this->getAllPiecesArray();        
+    }
+    
+    public function loadGameState($user, $game_id)
+    {
+        try {
+            $this->game = $this->getUserGameById($user, $game_id);        
+        } catch(NotYourGameException $e) {
+            throw $e ;
         }
-        
+                
         $this->chessboard = $this->getChessboardFromDb($this->game);
-        
-        return $this->getValidMoves();
     }
     
     public function getChessboardFromDb($game)
@@ -98,9 +137,17 @@ class GameMaster
         return $piece;
     }
     
-    public function getValidMoves()
+    public function getValidMoves($piece)
+    {
+        $squares = $this->chessboard->getPieceMoveList($piece);
+        
+        return $squares;
+    }
+    
+    public function getAllValidMoves()
     {
         $pieces = $this->chessboard->getPieces();
+        
         $positions = '';
         
         foreach($pieces as &$piece) {
@@ -122,7 +169,7 @@ class GameMaster
             }
         }
         
-        return false;
+        throw new NotYourGameException();
     }
     
     public function setGame($game)

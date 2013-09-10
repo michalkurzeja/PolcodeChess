@@ -13,3 +13,7 @@ join_game:
 display:
     pattern: /game/{game_id}
     defaults: { _controller: PolcodeChessBundle:Game:display }
+    
+get_pieces:
+    pattern: /pieces/{game_id}
+    defaults: { _controller: PolcodeChessBundle:Game:getPieces }

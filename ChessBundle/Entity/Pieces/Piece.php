@@ -210,6 +210,12 @@ abstract class Piece
         $name = get_class($this);
         return ($this->getIsWhite() ? 'White ' : 'Black ') . substr($name, strrpos($name, '\\')+1) . $this->getCoordinates();
     }
+    
+    public function getPieceName()
+    {
+        $name = get_class($this);
+        return substr($name, strrpos($name, '\\')+1);
+    }
 
     /**
      * Set game

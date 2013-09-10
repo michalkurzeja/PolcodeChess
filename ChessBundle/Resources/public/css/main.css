@@ -58,3 +58,69 @@ main {
 	margin: 10px;
 	border-radius: 10px;
 }
+
+#chessboard {
+	background: #707070;
+	border-radius: 10px;
+	display: inline-block;
+	padding: 20px 20px 0 0;
+}
+
+#chessboard td {
+	border-radius: 5px;
+	width: 70px;
+	height: 70px;
+	text-align: center;
+}
+
+#chessboard td:first-child {
+	width: 20px;
+}
+
+#chessboard tr:last-child td {
+	height: 20px;	
+}
+
+#chessboard td.col-label,
+#chessboard td.row-label {
+	font-weight: bold;
+}
+
+#chessboard tr:nth-child(2n) td:nth-child(2n+1),
+#chessboard tr:nth-child(2n+1) td:nth-child(2n) {
+	background: #5E5E5E;
+}
+
+#chessboard tr:nth-child(2n) td:nth-child(2n),
+#chessboard tr:nth-child(2n+1) td:nth-child(2n+1) {
+	background: #C4C4C4;
+}
+
+#chessboard td:hover {
+	box-shadow: 0 0 25px #F7D200 inset;
+}
+
+#chessboard td:first-child:hover,
+#chessboard tr:last-child td:hover {
+	box-shadow: none !important;
+}
+
+#chessboard td:first-child,
+#chessboard tr:last-child td {
+	border-radius: 0;
+	background: none !important;
+}
+
+.chess-piece {
+	width: 70px;
+	height: 70px;
+	background-size: contain !important;
+}
+
+.white {
+	color: white;
+}
+
+.black {
+	color: black;
+}

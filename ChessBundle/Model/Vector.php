@@ -58,6 +58,11 @@ class Vector
         return $this->y;
     }
     
+    public function toArray()
+    {
+        return array( 'x' => $this->getX(), 'y' => $this->getY() );
+    }
+    
     public function __toString()
     {
         return '[' . $this->getX() . ',' . $this->getY() . ']';

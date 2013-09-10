@@ -4,6 +4,7 @@ namespace Polcode\ChessBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JSONResponse;
 
 class GameController extends Controller
 {
@@ -25,8 +26,26 @@ class GameController extends Controller
     {
         $gm = $this->get('GameMaster');
         
-        $cont = $gm->getGameState( $this->getUser(), $game_id );
+        try {
+            $gm->loadGameState( $this->getUser(), $game_id );
+        } catch(NotYourGameException $e) {
+            return new Response('You\'re not allowed to view this game!');
+        }
         
-        return $this->render('PolcodeChessBundle:Game:game.html.twig', array('content' => $cont));
+        $cont = $gm->getAllValidMoves();
+        
+        return $this->render('PolcodeChessBundle:Game:game.html.twig', array('game_id' => $game_id, 'content' => $cont));
+    }
+    
+    public function getPiecesAction($game_id)
+    {
+        $gm = $this->get('GameMaster');
+
+        try {
+            $pieces = $gm->getGamePieces( $this->getuser(), $game_id );
+            return new JsonResponse($pieces);
+        } catch(NotYourGameException $e) {
+            return new Response('Not your game!', 404);
+        }
     }
 }
