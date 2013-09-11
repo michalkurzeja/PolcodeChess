@@ -1,7 +1,7 @@
-parameters:
-#    polcode_chess.example.class: Polcode\ChessBundle\Example
-
 services:
     GameMaster:
         class: Polcode\ChessBundle\Model\GameMaster
-        arguments: [@doctrine.orm.entity_manager, @templating]
+        arguments: [@doctrine.orm.entity_manager, @gameutilities]
+
+    GameUtilities:
+        class: Polcode\ChessBundle\Model\GameUtilities

@@ -6,54 +6,28 @@ use Polcode\ChessBundle\Model\Chessboard;
 use Polcode\ChessBundle\Entity\Pieces;
 use Polcode\ChessBundle\Entity\Game;
 use Polcode\ChessBundle\Exception\NotYourGameException;
+use Polcode\ChessBundle\Exception\InvalidClassNameException;
 
 class GameMaster
 {
     private $game;
     private $chessboard;
     private $em;
-    private $templating;
+    private $game_utils;
     
-    public function __construct($em, $templating)
+    public function __construct($em, $game_utils)
     {
         $this->em = $em;
-        $this->templating = $templating;
+        $this->game_utils = $game_utils;
     }
     
-    public function getPieceArray($piece, $moves)
-    {
-        foreach($moves as $index => $square) {
-            $moves[$index] = $square->toArray();
-        }
-        
-        return array(
-            'class' => $piece->getPieceName(),
-            'id' => $piece->getId(),
-            'file' => $piece->getFile(),
-            'rank' => $piece->getRank(),
-            'is_white' => $piece->getIsWhite(),
-            'moves' => $moves
-        );
-        
-    }
     
-    public function getAllPiecesArray()
-    {
-        $pieces = $this->chessboard->getPieces();
-        $pieces_array = array();
-        
-        foreach($pieces as $piece) {
-            $pieces_array[] = $this->getPieceArray($piece, $this->getValidMoves($piece));
-        }
-        
-        return $pieces_array;
-    }
     
     public function createNewGame($user)
     {
         $this->game = new Game();
-        $this->game   ->setWhite($user)
-                ->setWhiteTurn(true);
+        $this->game  ->setWhite($user)
+                     ->setWhiteTurn(true);
         
         $this->em->persist($this->game);
         
@@ -71,13 +45,13 @@ class GameMaster
             throw $e;
         }        
         
-        return $this->getAllPiecesArray();        
+        return $this->game_utils->getAllPiecesArray( $this->chessboard, $this );        
     }
     
     public function loadGameState($user, $game_id)
     {
         try {
-            $this->game = $this->getUserGameById($user, $game_id);        
+            $this->game = $this->game_utils->getUserGameById($user, $game_id);        
         } catch(NotYourGameException $e) {
             throw $e ;
         }
@@ -128,9 +102,12 @@ class GameMaster
     
     public function createPiece($class, $file, $rank, $is_white, $game)
     {
+        
         $full_class = "Polcode\\ChessBundle\\Entity\\Pieces\\$class";
         
-        $piece = new $full_class($file, $rank, $is_white, $game);
+        try {
+            $piece = new $full_class($file, $rank, $is_white, $game);
+        } catch(InvalidClassNameException $e) {} /* do something? */
         
         $this->em->persist($piece);
         
@@ -161,16 +138,6 @@ class GameMaster
         return $positions;
     }
     
-    public function getUserGameById($user, $game_id)
-    {
-        foreach($user->getAllGames() as $game) {
-            if($game->getId() == $game_id) {
-                return $game;
-            }
-        }
-        
-        throw new NotYourGameException();
-    }
     
     public function setGame($game)
     {
@@ -181,6 +148,6 @@ class GameMaster
     
     public function getGameId()
     {
-        return $this->game;
+        return $this->game->getId();
     }
 }

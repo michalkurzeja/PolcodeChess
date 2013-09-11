@@ -2,10 +2,15 @@
 <div id="chessboard" ng-controller="ChessboardCtrl" ng-init="init({{ game_id }})">
 	<table>
 		<tbody>
-			<tr ng-repeat="row in board | orderBy:$index:reverse track by $index">
-				<td class="row-label">{[{ $index + 1 }]}</td>
-				<td ng-repeat="cell in row track by $index">
-					<div ng-if="cell" class="chess-piece" style="background: url('{{ asset('bundles/polcodechess/images/pieces') }}/{[{ cell }]}.ico')">
+			<tr ng-repeat="row in board | reverse track by $index">
+				<td class="row-label">{[{ 8 - $index }]}</td>
+				<td ng-repeat="cell in row track by $index" data-coords="{[{ ($index + 1) + '' + (8 - $parent.$index) }]}">
+					<div	data-id="{[{ cell.id }]}" 
+							ng-mouseenter="highlightMovesOn(cell)"
+							ng-mouseleave="highlightMovesOff()" 
+							ng-if="cell" 
+							class="chess-piece" 
+							style="background: url('{{ asset('bundles/polcodechess/images/pieces') }}/{[{ cell.name }]}.ico')">
 						
 					</div>
 				</td>
