@@ -31,7 +31,7 @@ class GameMaster
         
         $this->em->persist($this->game);
         
-        $this->dev_starting_pos($this->game);
+        $this->generateStartingPositions($this->game);
         $this->em->flush();
         
         return $this->game->getId();
@@ -57,6 +57,8 @@ class GameMaster
         }
                 
         $this->chessboard = $this->getChessboardFromDb($this->game);
+        
+        return $this->game->isPlayerWhite($user);
     }
     
     public function getChessboardFromDb($game)
@@ -77,16 +79,16 @@ class GameMaster
     public function generateStartingPositions($game)
     {
         $whites = array( 
-            $this->createPiece('King', 4, 1, true, $game),
-            $this->createPiece('Queen', 5, 1, true, $game),
+            $this->createPiece('King', 5, 1, true, $game),
+            $this->createPiece('Queen', 4, 1, true, $game),
             $this->createPiece('Bishop', 3, 1, true, $game), $this->createPiece('Bishop', 6, 1, true, $game),
             $this->createPiece('Knight', 2, 1, true, $game), $this->createPiece('Knight', 7, 1, true, $game),
             $this->createPiece('Rook', 1, 1, true, $game), $this->createPiece('Rook', 8, 1, true, $game)   
         );
 
         $blacks = array( 
-            $this->createPiece('King', 4, 8, false, $game),
-            $this->createPiece('Queen', 5, 8, false, $game),
+            $this->createPiece('King', 5, 8, false, $game),
+            $this->createPiece('Queen', 4, 8, false, $game),
             $this->createPiece('Bishop', 3, 8, false, $game), $this->createPiece('Bishop', 6, 8, false, $game),
             $this->createPiece('Knight', 2, 8, false, $game), $this->createPiece('Knight', 7, 8, false, $game),
             $this->createPiece('Rook', 1, 8, false, $game), $this->createPiece('Rook', 8, 8, false, $game)   

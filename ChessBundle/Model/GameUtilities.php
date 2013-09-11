@@ -11,7 +11,7 @@ class GameUtilities
         }
         
         return array(
-            'class' => $piece->getPieceName(),
+            'classname' => $piece->getPieceName(),
             'file' => $piece->getFile(),
             'rank' => $piece->getRank(),
             'is_white' => $piece->getIsWhite(),

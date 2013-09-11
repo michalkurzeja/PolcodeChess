@@ -61,7 +61,7 @@ class Game
     protected $end_time;
 
     /**
-     * @ORM\OneToMany(targetEntity="Polcode\ChessBundle\Entity\Pieces\Piece", mappedBy="game")
+     * @ORM\OneToMany(targetEntity="Polcode\ChessBundle\Entity\Pieces\Piece", mappedBy="game", cascade={"remove"})
      * 
      * @var Piece
      */
@@ -244,5 +244,13 @@ class Game
         return $this->pieces->filter(function($elem) {
              return !$elem->getIsWhite();
         });
+    }
+    
+    public function isPlayerWhite(User $user) {
+        if( $this->getWhite()->getId() == $user->getId() ) {
+            return true;
+        }
+        
+        return false;
     }
 }

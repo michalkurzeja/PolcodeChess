@@ -86,7 +86,9 @@ class Chessboard
                         $squares[] = clone $square;
                         $square->setCoordinates($square->addVector($vector));
                     }
-                    $squares[] = $square; /* add square occupied by another piece */
+                    if( $this->getSquareContent($square)->getIsWhite() != $piece->getIsWhite() ) {
+                        $squares[] = $square; /* add square occupied by another piece */
+                    }
                 } catch(OutOfBoardException $e) {} /* the end of the board has been reached */
             }
             
@@ -96,7 +98,11 @@ class Chessboard
         foreach($piece->getMoveVectors() as $vector) {
             $square = $piece->getCoordinates()->addVector($vector);
             if( $this->isSquareWithinBoard($square) ) {
-                $squares[] = $square;
+                $sq_content = $this->getSquareContent($square);
+                
+                if( !$sq_content || $sq_content->getIsWhite() != $piece->getIsWhite() ) {
+                    $squares[] = $square;
+                }
             }  
         }
         

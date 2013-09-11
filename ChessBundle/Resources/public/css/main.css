@@ -88,12 +88,12 @@ main {
 
 #chessboard tr:nth-child(2n) td:nth-child(2n+1),
 #chessboard tr:nth-child(2n+1) td:nth-child(2n) {
-	background: #5E5E5E;
+	background: #C4C4C4;
 }
 
 #chessboard tr:nth-child(2n) td:nth-child(2n),
 #chessboard tr:nth-child(2n+1) td:nth-child(2n+1) {
-	background: #C4C4C4;
+	background: #3D3D3D;
 }
 
 #chessboard td:hover {
@@ -129,14 +129,20 @@ main {
 	box-shadow: 0 0 25px #76D914 inset;	
 }
 
+.selection-highlight {
+	box-shadow: 0 0 25px #FF9500 inset;	
+}
+
 #chessboard tr:nth-child(2n) td:nth-child(2n+1).move-highlight,
 #chessboard tr:nth-child(2n+1) td:nth-child(2n).move-highlight {
-	background: #828282;
+	background: #DBDBDB;
 }
 
 #chessboard tr:nth-child(2n) td:nth-child(2n).move-highlight,
 #chessboard tr:nth-child(2n+1) td:nth-child(2n+1).move-highlight {
-	background: #DBDBDB;
+	background: #828282;
 }
 
-
+.square-selected {
+	box-shadow: 0 0 25px #FF9500 inset !important;
+}

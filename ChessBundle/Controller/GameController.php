@@ -27,14 +27,16 @@ class GameController extends Controller
         $gm = $this->get('GameMaster');
         
         try {
-            $gm->loadGameState( $this->getUser(), $game_id );
+            $player_white = $gm->loadGameState( $this->getUser(), $game_id );
         } catch(NotYourGameException $e) {
             return new Response('You\'re not allowed to view this game!');
         }
         
         $cont = $gm->getAllValidMoves();
         
-        return $this->render('PolcodeChessBundle:Game:game.html.twig', array('game_id' => $game_id, 'content' => $cont));
+        return $this->render('PolcodeChessBundle:Game:game.html.twig', array(   'game_id' => $game_id, 
+                                                                                'player_white' => $player_white,
+                                                                                'content' => $cont));
     }
     
     public function getPiecesAction($game_id)
