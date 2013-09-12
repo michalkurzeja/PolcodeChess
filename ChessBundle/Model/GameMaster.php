@@ -7,6 +7,7 @@ use Polcode\ChessBundle\Entity\Pieces;
 use Polcode\ChessBundle\Entity\Game;
 use Polcode\ChessBundle\Exception\NotYourGameException;
 use Polcode\ChessBundle\Exception\InvalidClassNameException;
+use Polcode\ChessBundle\Exception\InvalidMoveException;
 
 class GameMaster
 {
@@ -40,12 +41,12 @@ class GameMaster
     public function getGamePieces($user, $game_id)
     {
         try {
-            $this->loadGameState($user, $game_id);
+            $player_white = $this->loadGameState($user, $game_id);
         } catch(NotYourGameException $e) {
             throw $e;
         }        
         
-        return $this->game_utils->getAllPiecesArray( $this->chessboard, $this );        
+        return $this->game_utils->getAllPiecesArray( $this->chessboard, $this, $player_white );        
     }
     
     public function loadGameState($user, $game_id)
@@ -114,6 +115,71 @@ class GameMaster
         $this->em->persist($piece);
         
         return $piece;
+    }
+    
+    public function getUpdate($user, $game_id) {
+        $update = array();
+        
+        try {
+            $is_white = $this->loadGameState($user, $game_id);
+        } catch(NotYourGameException $e) {
+            throw $e;
+        }
+        
+        if($this->game->getWhiteTurn() === $is_white) {
+            $update['turn'] = true;
+        } else {
+            $update['turn'] = false;
+        }
+        
+        return $update;
+    }
+    
+    public function movePiece($user, $game_id, $data) {
+         try {
+            $is_white = $this->loadGameState($user, $game_id);
+        } catch(NotYourGameException $e) {
+            throw $e;
+        }
+        
+        $piece = $this->chessboard->findPieceById($data->piece->id);
+        
+        if( !$this->verifyPiece($piece, $data->piece, $is_white) ) {
+            throw new InvalidMoveException();
+        }
+        
+        if( !$this->isMoveLegal($piece, $data->coords) ) {
+            throw new InvalidMoveException();
+        }
+        
+        $piece->setCoordinates( new Vector( $data->coords->file, $data->coords->rank ) );
+        $this->em->flush();
+        $this->chessboard = $this->getChessboardFromDb($this->game);
+        return $this->game_utils->getAllPiecesMovesArray( $this->chessboard, $this, $is_white );
+    }
+    
+    public function verifyPiece($piece, $position, $owner_white) {
+        if( $piece->getFile() == $position->file 
+            && $piece->getRank() == $position->rank
+            && $piece->getIsWhite() == $owner_white ) {
+                
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public function isMoveLegal($piece, $coords)
+    {
+        $legal_moves = $this->getValidMoves($piece);
+        
+        foreach($legal_moves as $square) {
+            if( $square->getX() == $coords->file && $square->getY() == $coords->rank ) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     public function getValidMoves($piece)

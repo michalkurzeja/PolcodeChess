@@ -76,7 +76,6 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 			}
 			
 			movePiece(selection, {x: file, y: rank});
-			clearSelection();
 		}
 	}
 	
@@ -85,14 +84,69 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 		$scope.player_white = player_white;
 		$scope.board = boardFactory.getBoardAndPieces($scope.game_id);
 		$chessboard = $('#chessboard');
+		
+		sendUpdateRequest();
+		setInterval( sendUpdateRequest, 5000 );
+	}
+	
+	function sendUpdateRequest() {
+		$http({method: 'GET', url:  $scope.game_id + '/update', headers: {'Content-type': 'application/json'}})
+			.success( function(data) { update(data); } ).error(function() {
+				console.log('Error getting update!');
+			});
+	}
+	
+	function update(data) {
+		turn = data.turn;
 	}
 	
 	function movePiece(piece, coords) {
+		clearSelection();
+
 		console.log('moving [' + piece.file + ', ' + piece.rank + '] to [' + coords.x + ', ' + coords.y + ']');
+
+		turn = false;
+
 		$scope.board[ coords.y - 1 ][ coords.x - 1 ] = piece;
 		$scope.board[ piece.rank - 1 ][ piece.file - 1 ] = null;
 		
-		turn = false;
+		var piece_info = { id: piece.id, file: piece.file, rank: piece.rank };
+		
+		piece.file = coords.x;
+		piece.rank = coords.y;
+		
+		sendMoveRequest(piece_info, coords);
+	}
+	
+	function sendMoveRequest(piece_info, coords)
+	{
+		var moveData = { piece: { id: piece_info.id, file: piece_info.file, rank: piece_info.rank }, coords: { file: coords.x, rank: coords.y } };
+		
+		$http({method: 'POST', url:  $scope.game_id + '/move', data: moveData, headers: {'Content-type': 'application/json'}})
+			.success( function(data) { 
+				console.log('Move accepted by server!');
+				for(piece in data) {
+					console.log($scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].name);
+					console.log($scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].moves);
+					console.log(data[piece].moves);
+					$scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].moves = data[piece].moves;
+					console.log($scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].moves);
+				}
+				
+			}).error(function() {
+				console.log('Move rejected by server! Try again!');
+				
+				piece = $scope.board[ coords.y - 1 ][ coords.x - 1 ];
+				
+				/* reverting move (setting piece on it's former position) */
+				$scope.board[ piece_info.rank - 1 ][ piece_info.file - 1 ] = piece;
+				$scope.board[ coords.y - 1 ][ coords.x - 1 ] = null;
+				
+				piece.file = piece_info.file;
+				piece.rank = piece_info.rank;
+				
+				turn = true;
+			});
 	}
 	
 	function isMoveLegal(coords, piece) {
@@ -163,7 +217,7 @@ polcodeChess.factory('boardFactory', function($http) {
 					var color = data[piece].is_white ? 'White' : 'Black';
 					
 					board[ data[piece].rank - 1 ][ data[piece].file - 1 ] = {
-																					id: piece,
+																					id: parseInt(piece),
 																					classname: data[piece].classname,
 																					name: data[piece].classname + color,
 																					file: data[piece].file,

@@ -35,6 +35,19 @@ class Chessboard
         }
     } 
     
+    public function findPieceById($piece_id)
+    {
+        $pieces = $this->getPieces();
+        
+        foreach($pieces as $p) {
+            if( $p->getId() == $piece_id ) {
+                return $p;
+            }
+        }
+        
+        return null;
+    }
+    
     public function getPieces($color = null)
     {
         if($color == 'white') {

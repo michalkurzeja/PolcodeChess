@@ -16,8 +16,22 @@ display:
     requirements:
         game_id: \d+
 
+update:
+    pattern: /game/{game_id}/update
+    defaults: { _controller: PolcodeChessBundle:Game:update }
+    requirements:
+        game_id: \d+
+
+move:
+    pattern: /game/{game_id}/move
+    defaults: { _controller: PolcodeChessBundle:Game:move }
+    methods:  [POST]
+    requirements:
+        game_id: \d+
+
 get_pieces:
     pattern: /game/{game_id}/pieces
     defaults: { _controller: PolcodeChessBundle:Game:getPieces }
     requirements:
         game_id: \d+
+

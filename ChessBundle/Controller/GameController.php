@@ -3,8 +3,12 @@
 namespace Polcode\ChessBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JSONResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Polcode\ChessBundle\Exception\NotYourGameException;
+use Polcode\ChessBundle\Exception\InvalidMoveException;
+use Polcode\ChessBundle\Exception\InvalidFormatException;
 
 class GameController extends Controller
 {
@@ -39,6 +43,37 @@ class GameController extends Controller
                                                                                 'content' => $cont));
     }
     
+    public function updateAction($game_id)
+    {
+        $gm = $this->get('GameMaster');
+        
+        try {
+            $update = $gm->getUpdate($this->getUser(), $game_id);
+        } catch(NotYourGameException $e) {
+            return new Response('Not your game!', 404);
+        }
+        
+        return new JsonResponse($update);
+    }
+
+    public function moveAction($game_id)
+    {        
+        $gm = $this->get('GameMaster');
+        
+        try {            
+            $data = json_decode($this->get('request')->getContent());
+            $moves = $gm->movePiece($this->getUser(), $game_id, $data);
+        } catch(InvalidFormatException $e) {
+            return new Response('Wrong format!', 404);
+        } catch(NotYourGameException $e) {
+            return new Response('Not your game!', 404);
+        } catch(InvalidMoveException $e) {
+            return new Response('Invalid move!', 404);
+        }
+
+        return new JsonResponse($moves);
+    }
+
     public function getPiecesAction($game_id)
     {
         $gm = $this->get('GameMaster');
@@ -49,5 +84,5 @@ class GameController extends Controller
         } catch(NotYourGameException $e) {
             return new Response('Not your game!', 404);
         }
-    }
+    }    
 }
