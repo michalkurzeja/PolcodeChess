@@ -129,6 +129,15 @@ class GameMaster
         return $piece;
     }
     
+    public function isMyTurn($user)
+    {
+        if( $this->game->getWhiteTurn() === $this->game->isPlayerWhite($user) ) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     public function getUpdate($user, $game_id, $move_count) {
         $update = array();
         
@@ -138,14 +147,10 @@ class GameMaster
             throw $e;
         }
         
-        /* get update on player's turn */
-        if($this->game->getWhiteTurn() === $player_white) {
-            $update['turn'] = true;
-        } else {
-            $update['turn'] = false;
-        }
-
         if( $this->getMoveCount() > $move_count ) {
+            /* get update on player's turn */
+            $update['turn'] = $this->isMyTurn($user);
+
             $update['old_move_count'] = $move_count;
             /* get current move count */
             $update['move_count'] = $this->getMoveCount();
@@ -225,7 +230,6 @@ class GameMaster
         
         return $positions;
     }
-    
     
     public function setGame($game)
     {

@@ -80,9 +80,10 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 		}
 	}
 	
-	$scope.init = function(game_id, move_count, color) {
+	$scope.init = function(game_id, move_count, my_turn, color) {
 		$scope.game_id = game_id;
 		$scope.move_count = move_count;
+		$scope.turn = my_turn == 'yes' ? true : false;
 		$scope.player_white = color == 'white' ? true : false;
 		$scope.board = boardFactory.getBoardAndPieces($scope.game_id);
 		$chessboard = $('#chessboard');
