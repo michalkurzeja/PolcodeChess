@@ -7,6 +7,7 @@ polcodeChess.config(function($interpolateProvider) {
 polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) {
 	
 	$scope.game_id;
+	$scope.move_count;
 	$scope.player_color;
 	$scope.board = [];
 	
@@ -79,25 +80,39 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 		}
 	}
 	
-	$scope.init = function(game_id, player_white) {
+	$scope.init = function(game_id, move_count, color) {
 		$scope.game_id = game_id;
-		$scope.player_white = player_white;
+		$scope.move_count = move_count;
+		$scope.player_white = color == 'white' ? true : false;
 		$scope.board = boardFactory.getBoardAndPieces($scope.game_id);
 		$chessboard = $('#chessboard');
+
+		console.log($scope.move_count);
 		
 		sendUpdateRequest();
 		setInterval( sendUpdateRequest, 5000 );
 	}
 	
 	function sendUpdateRequest() {
-		$http({method: 'GET', url:  $scope.game_id + '/update', headers: {'Content-type': 'application/json'}})
+		console.log('Requesting update with move_count: ' + $scope.move_count);
+		$http({method: 'POST', url:  $scope.game_id + '/update', data: {move_count: $scope.move_count}, headers: {'Content-type': 'application/json'}})
 			.success( function(data) { update(data); } ).error(function() {
 				console.log('Error getting update!');
 			});
 	}
 	
 	function update(data) {
+		console.log(data);
 		turn = data.turn;
+
+		if(typeof data.move_count != 'undefined') {
+			console.log('Sync operations:');
+			$scope.move_count = data.move_count;		
+			updateMovedPiece(data.last_moved);
+			refreshPiecesMoves(data.moves);
+			console.log('Sync completed');
+		}
+		
 	}
 	
 	function movePiece(piece, coords) {
@@ -115,6 +130,8 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 		piece.file = coords.x;
 		piece.rank = coords.y;
 		
+		$scope.move_count++;
+		
 		sendMoveRequest(piece_info, coords);
 	}
 	
@@ -125,16 +142,11 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 		$http({method: 'POST', url:  $scope.game_id + '/move', data: moveData, headers: {'Content-type': 'application/json'}})
 			.success( function(data) { 
 				console.log('Move accepted by server!');
-				for(piece in data) {
-					console.log($scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].name);
-					console.log($scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].moves);
-					console.log(data[piece].moves);
-					$scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].moves = data[piece].moves;
-					console.log($scope.board[ data[piece].rank - 1 ][ data[piece].file - 1 ].moves);
-				}
 				
 			}).error(function() {
 				console.log('Move rejected by server! Try again!');
+				
+				$scope.move_count--;
 				
 				piece = $scope.board[ coords.y - 1 ][ coords.x - 1 ];
 				
@@ -159,6 +171,44 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 
 		console.log('isMoveLegal() == false');		
 		return false;
+	}
+	
+	function updateMovedPiece(last_moved) {
+		console.log('updateMovedPiece()');
+		for(var i=0; i<8; i++) {
+			for(var j=0; j<8; j++) {
+				if( $scope.board[ i ][ j ] && ($scope.board[ i ][ j ].id == last_moved.id )) {
+					var piece = $scope.board[ i ][ j ];
+					
+					console.log('piece:');
+					console.log(piece);
+					
+					$scope.board[ last_moved.rank - 1 ][ last_moved.file - 1 ] = {
+																					id: piece.id,
+																					classname: piece.classname,
+																					name: piece.name,
+																					file: piece.file,
+																					rank: piece.rank,
+																					is_white: piece.is_white,
+																					moves: piece.moves
+																					}; 
+					$scope.board[ i ][ j ] = null;
+					
+					console.log('after move:');
+					console.log($scope.board[ last_moved.rank - 1 ][ last_moved.file - 1 ]);
+					
+					return;
+				}
+			}
+		}
+	}
+	
+	function refreshPiecesMoves(pieces) {
+		for(piece in pieces) {
+			if( $scope.board[ pieces[piece].rank - 1 ][ pieces[piece].file - 1 ] ) {
+				$scope.board[ pieces[piece].rank - 1 ][ pieces[piece].file - 1 ].moves = pieces[piece].moves;
+			}
+		}
 	}
 	
 	function select(piece) {
@@ -217,13 +267,13 @@ polcodeChess.factory('boardFactory', function($http) {
 					var color = data[piece].is_white ? 'White' : 'Black';
 					
 					board[ data[piece].rank - 1 ][ data[piece].file - 1 ] = {
-																					id: parseInt(piece),
-																					classname: data[piece].classname,
-																					name: data[piece].classname + color,
-																					file: data[piece].file,
-																					rank: data[piece].rank,
-																					is_white: data[piece].is_white,
-																					moves: data[piece].moves																			
+																				id: parseInt(piece),
+																				classname: data[piece].classname,
+																				name: data[piece].classname + color,
+																				file: data[piece].file,
+																				rank: data[piece].rank,
+																				is_white: data[piece].is_white,
+																				moves: data[piece].moves																			
 																				};
 				}
 			}).error(function() { console.log('Error getting pieces!');	});

@@ -27,6 +27,15 @@ class GameUtilities
         return $pieces_array;
     }
     
+    public function getLastMovedPieceArray($piece)
+    {
+        return array(
+            'id' => $piece->getId(),
+            'file' => $piece->getFile(),
+            'rank' => $piece->getRank()
+        );
+    }
+    
     public function getPieceUpdateArray($piece, $moves)
     {
         return array(
@@ -61,6 +70,17 @@ class GameUtilities
         return $pieces_array;
     }
     
+    public function verifyPiece($piece, $position, $owner_white) {
+        if( $piece->getFile() == $position->file 
+            && $piece->getRank() == $position->rank
+            && $piece->getIsWhite() == $owner_white ) {
+                
+            return true;
+        }
+        
+        return false;
+    }
+
     public function getUserGameById($user, $game_id)
     {
         foreach($user->getAllGames() as $game) {
@@ -72,5 +92,14 @@ class GameUtilities
         throw new NotYourGameException();
     }
     
-    
+    public function getGameWithSlot($game_id, $em)
+    {
+        $game = $em->getRepository('PolcodeChessBundle:Game')->findOneById($game_id);
+        
+        if( !$game->hasEmptySlot() ) {
+            throw new GameFullException();
+        }
+        
+        return $game;
+    }
 }

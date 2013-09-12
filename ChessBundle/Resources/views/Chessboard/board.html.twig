@@ -1,5 +1,5 @@
 {% block Chessboard %}
-<div id="chessboard" ng-controller="ChessboardCtrl" ng-init="init({{ game_id }}, {{ player_white }})">
+<div id="chessboard" ng-controller="ChessboardCtrl" ng-init="init({{ game_id }}, {{ move_count }}, '{{ color }}')">
 	<table>
 		<tbody>
 			<tr ng-repeat="row in board | reverse track by $index">

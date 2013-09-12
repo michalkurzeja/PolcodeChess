@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Polcode\ChessBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Polcode\ChessBundle\Entity\Pieces;
+use Polcode\ChessBundle\Exception\GameFullException;
 
 /**
  * @ORM\Entity
@@ -29,7 +30,7 @@ class Game
      * 
      * @var User
      */
-    protected $white;
+    protected $white = null;
     
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="black_games")
@@ -37,14 +38,14 @@ class Game
      * 
      * @var User
      */
-    protected $black;
+    protected $black = null;
     
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      * 
      * @var boolean
      */
-    protected $white_turn;
+    protected $white_turn = null;
     
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -66,6 +67,17 @@ class Game
      * @var Piece
      */
     protected $pieces;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $move_count = 0;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Polcode\ChessBundle\Entity\Pieces\Piece")
+     * @ORM\JoinColumn(name="last_moved_id", referencedColumnName="id")
+     */
+    protected $last_moved = null;
 
     /**
      * Get id
@@ -252,5 +264,84 @@ class Game
         }
         
         return false;
+    }
+    
+    public function hasEmptySlot()
+    {
+        if(!$this->getWhite() || !$this->getBlack()) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public function setPlayerOnEmptySlot(User $user)
+    {
+        if(!$this->getWhite()) {
+            $this->setWhite($user);
+            
+            return;
+        }
+        
+        if(!$this->getBlack()) {
+            $this->setBlack($user);
+            
+            return;
+        }
+        
+        throw new GameFullException();
+    }
+
+    /**
+     * Set move_count
+     *
+     * @param integer $moveCount
+     * @return Game
+     */
+    public function setMoveCount($moveCount)
+    {
+        $this->move_count = $moveCount;
+    
+        return $this;
+    }
+
+    public function incrementMoveCount()
+    {
+        $this->setMoveCount( $this->getMoveCount() + 1 );
+        
+        return $this;
+    }
+
+    /**
+     * Get move_count
+     *
+     * @return integer 
+     */
+    public function getMoveCount()
+    {
+        return $this->move_count;
+    }
+
+    /**
+     * Set last_moved
+     *
+     * @param \Polcode\ChessBundle\Entity\Pieces\Piece $lastMoved
+     * @return Game
+     */
+    public function setLastMoved(\Polcode\ChessBundle\Entity\Pieces\Piece $lastMoved = null)
+    {
+        $this->last_moved = $lastMoved;
+    
+        return $this;
+    }
+
+    /**
+     * Get last_moved
+     *
+     * @return \Polcode\ChessBundle\Entity\Pieces\Piece 
+     */
+    public function getLastMoved()
+    {
+        return $this->last_moved;
     }
 }

@@ -8,6 +8,7 @@ use Polcode\ChessBundle\Entity\Game;
 use Polcode\ChessBundle\Exception\NotYourGameException;
 use Polcode\ChessBundle\Exception\InvalidClassNameException;
 use Polcode\ChessBundle\Exception\InvalidMoveException;
+use Polcode\ChessBundle\Exception\GameFullException;
 
 class GameMaster
 {
@@ -38,6 +39,17 @@ class GameMaster
         return $this->game->getId();
     }
     
+    public function joinGame($user, $game_id) {
+        try {
+            $this->game = $this->game_utils->getGameWithSlot($game_id, $this->em);
+        } catch(GameFullException $e) {
+            throw $e;
+        }
+        
+        $this->game->setPlayerOnEmptySlot($user);
+        $this->em->flush();
+    }
+    
     public function getGamePieces($user, $game_id)
     {
         try {
@@ -46,7 +58,7 @@ class GameMaster
             throw $e;
         }        
         
-        return $this->game_utils->getAllPiecesArray( $this->chessboard, $this, $player_white );        
+        return $this->game_utils->getAllPiecesArray( $this->chessboard, $this, $player_white );       
     }
     
     public function loadGameState($user, $game_id)
@@ -117,34 +129,51 @@ class GameMaster
         return $piece;
     }
     
-    public function getUpdate($user, $game_id) {
+    public function getUpdate($user, $game_id, $move_count) {
         $update = array();
         
         try {
-            $is_white = $this->loadGameState($user, $game_id);
+            $player_white = $this->loadGameState($user, $game_id);
         } catch(NotYourGameException $e) {
             throw $e;
         }
         
-        if($this->game->getWhiteTurn() === $is_white) {
+        /* get update on player's turn */
+        if($this->game->getWhiteTurn() === $player_white) {
             $update['turn'] = true;
         } else {
             $update['turn'] = false;
         }
-        
+
+        if( $this->getMoveCount() > $move_count ) {
+            $update['old_move_count'] = $move_count;
+            /* get current move count */
+            $update['move_count'] = $this->getMoveCount();
+                        
+            /* get last moved piece */
+            $update['last_moved'] = $this->game_utils->getLastMovedPieceArray( $this->game->getLastMoved() );
+            
+            /* get update moves of pieces */
+            $update['moves'] = $this->game_utils->getAllPiecesMovesArray($this->chessboard, $this, $player_white);
+        }
+
         return $update;
     }
     
     public function movePiece($user, $game_id, $data) {
          try {
-            $is_white = $this->loadGameState($user, $game_id);
+            $player_white = $this->loadGameState($user, $game_id);
         } catch(NotYourGameException $e) {
             throw $e;
         }
         
+        /* set no-ones turn for the time of calculations */
+        $this->game->setWhiteTurn(null);
+        $this->em->flush();
+        
         $piece = $this->chessboard->findPieceById($data->piece->id);
         
-        if( !$this->verifyPiece($piece, $data->piece, $is_white) ) {
+        if( !$this->game_utils->verifyPiece($piece, $data->piece, $player_white) ) {
             throw new InvalidMoveException();
         }
         
@@ -152,23 +181,14 @@ class GameMaster
             throw new InvalidMoveException();
         }
         
-        $piece->setCoordinates( new Vector( $data->coords->file, $data->coords->rank ) );
-        $this->em->flush();
-        $this->chessboard = $this->getChessboardFromDb($this->game);
-        return $this->game_utils->getAllPiecesMovesArray( $this->chessboard, $this, $is_white );
-    }
-    
-    public function verifyPiece($piece, $position, $owner_white) {
-        if( $piece->getFile() == $position->file 
-            && $piece->getRank() == $position->rank
-            && $piece->getIsWhite() == $owner_white ) {
-                
-            return true;
-        }
+        $piece->setCoordinates( new Vector( $data->coords->file, $data->coords->rank ) ); /* set new coordinates for a piece */
+        $this->game->setLastMoved($piece); /* sets the last moved piece */
+        $this->game->incrementMoveCount(); /* increment move count */
+        $this->game->setWhiteTurn( !$player_white ); /* if player is white, sets turn to black (and vice versa) */
         
-        return false;
+        $this->em->flush();
     }
-    
+        
     public function isMoveLegal($piece, $coords)
     {
         $legal_moves = $this->getValidMoves($piece);
@@ -217,5 +237,10 @@ class GameMaster
     public function getGameId()
     {
         return $this->game->getId();
+    }
+    
+    public function getMoveCount()
+    {
+        return $this->game->getMoveCount();
     }
 }

@@ -19,6 +19,7 @@ display:
 update:
     pattern: /game/{game_id}/update
     defaults: { _controller: PolcodeChessBundle:Game:update }
+    methods:  [POST]
     requirements:
         game_id: \d+
 

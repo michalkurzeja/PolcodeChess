@@ -23,6 +23,10 @@ class GameController extends Controller
     
     public function joinAction($game_id)
     {
+        $gm = $this->get('GameMaster');
+        
+        $gm->joinGame($this->getUser(), $game_id);
+        
         return $this->redirect( $this->generateUrl('display', array('game_id' => $game_id)), 301 );
     }
     
@@ -36,10 +40,14 @@ class GameController extends Controller
             return new Response('You\'re not allowed to view this game!');
         }
         
-        $cont = $gm->getAllValidMoves();
+        $color = $player_white ? 'white' : 'black';
         
+        $move_count = $gm->getMoveCount();
+        
+        $cont = $gm->getAllValidMoves();
         return $this->render('PolcodeChessBundle:Game:game.html.twig', array(   'game_id' => $game_id, 
-                                                                                'player_white' => $player_white,
+                                                                                'move_count' => $move_count,
+                                                                                'color' => $color,
                                                                                 'content' => $cont));
     }
     
@@ -48,7 +56,10 @@ class GameController extends Controller
         $gm = $this->get('GameMaster');
         
         try {
-            $update = $gm->getUpdate($this->getUser(), $game_id);
+            $data = json_decode($this->get('request')->getContent());
+            $update = $gm->getUpdate($this->getUser(), $game_id, $data->move_count);
+        } catch(InvalidFormatException $e) {
+            return new Response('Wrong format!', 404);
         } catch(NotYourGameException $e) {
             return new Response('Not your game!', 404);
         }
@@ -62,7 +73,7 @@ class GameController extends Controller
         
         try {            
             $data = json_decode($this->get('request')->getContent());
-            $moves = $gm->movePiece($this->getUser(), $game_id, $data);
+            $gm->movePiece($this->getUser(), $game_id, $data);
         } catch(InvalidFormatException $e) {
             return new Response('Wrong format!', 404);
         } catch(NotYourGameException $e) {
@@ -71,7 +82,7 @@ class GameController extends Controller
             return new Response('Invalid move!', 404);
         }
 
-        return new JsonResponse($moves);
+        return new Response('Move accepted!');
     }
 
     public function getPiecesAction($game_id)
