@@ -80,6 +80,12 @@ class Game
     protected $last_moved = null;
 
     /**
+     * @ORM\OneToOne(targetEntity="Polcode\ChessBundle\Entity\Pieces\Piece")
+     * @ORM\JoinColumn(name="en_passable_id", referencedColumnName="id")
+     */
+    protected $en_passable = null;
+    
+    /**
      * Get id
      *
      * @return integer 
@@ -343,5 +349,28 @@ class Game
     public function getLastMoved()
     {
         return $this->last_moved;
+    }
+
+    /**
+     * Set en_passable
+     *
+     * @param \Polcode\ChessBundle\Entity\Pieces\Piece $enPassable
+     * @return Game
+     */
+    public function setEnPassable(\Polcode\ChessBundle\Entity\Pieces\Piece $enPassable = null)
+    {
+        $this->en_passable = $enPassable;
+    
+        return $this;
+    }
+
+    /**
+     * Get en_passable
+     *
+     * @return \Polcode\ChessBundle\Entity\Pieces\Piece 
+     */
+    public function getEnPassable()
+    {
+        return $this->en_passable;
     }
 }

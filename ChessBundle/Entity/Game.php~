@@ -80,6 +80,12 @@ class Game
     protected $last_moved = null;
 
     /**
+     * @ORM\OneToOne(targetEntity="Polcode\ChessBundle\Entity\Pieces\Piece")
+     * @ORM\JoinColumn(name="en_passable_id", referencedColumnName="id")
+     */
+    protected $en_passable = null;
+    
+    /**
      * Get id
      *
      * @return integer 
@@ -290,5 +296,58 @@ class Game
         }
         
         throw new GameFullException();
+    }
+
+    /**
+     * Set move_count
+     *
+     * @param integer $moveCount
+     * @return Game
+     */
+    public function setMoveCount($moveCount)
+    {
+        $this->move_count = $moveCount;
+    
+        return $this;
+    }
+
+    public function incrementMoveCount()
+    {
+        $this->setMoveCount( $this->getMoveCount() + 1 );
+        
+        return $this;
+    }
+
+    /**
+     * Get move_count
+     *
+     * @return integer 
+     */
+    public function getMoveCount()
+    {
+        return $this->move_count;
+    }
+
+    /**
+     * Set last_moved
+     *
+     * @param \Polcode\ChessBundle\Entity\Pieces\Piece $lastMoved
+     * @return Game
+     */
+    public function setLastMoved(\Polcode\ChessBundle\Entity\Pieces\Piece $lastMoved = null)
+    {
+        $this->last_moved = $lastMoved;
+    
+        return $this;
+    }
+
+    /**
+     * Get last_moved
+     *
+     * @return \Polcode\ChessBundle\Entity\Pieces\Piece 
+     */
+    public function getLastMoved()
+    {
+        return $this->last_moved;
     }
 }

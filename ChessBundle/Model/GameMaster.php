@@ -16,11 +16,13 @@ class GameMaster
     private $chessboard;
     private $em;
     private $game_utils;
+    private $cache;
     
-    public function __construct($em, $game_utils)
+    public function __construct($em, $game_utils, $cache)
     {
         $this->em = $em;
         $this->game_utils = $game_utils;
+        $this->cache = $cache;
     }
     
     
@@ -186,11 +188,26 @@ class GameMaster
             throw new InvalidMoveException();
         }
         
+        /* clear en passable after legality check */
+        $this->game->setEnPassable( null );
+        
+        if( $piece instanceof Pieces\Pawn ) {        
+            $difference = $piece->getCoordinates()->getY() - $data->coords->rank;
+            
+            if( $difference == 2 || $difference == -2 ) {
+                $this->game->setEnPassable( $piece );
+            }
+        }
+        
         $piece->setCoordinates( new Vector( $data->coords->file, $data->coords->rank ) ); /* set new coordinates for a piece */
+        $piece->setHasMoved( true ); /* mark the piece as already moved */
+        
         $this->game->setLastMoved($piece); /* sets the last moved piece */
         $this->game->incrementMoveCount(); /* increment move count */
         $this->game->setWhiteTurn( !$player_white ); /* if player is white, sets turn to black (and vice versa) */
         
+        $this->cache->save( "chess.move_count.{$game_id}", $this->game->getMoveCount() ); /* save move count in cache */
+          
         $this->em->flush();
     }
         
@@ -211,6 +228,9 @@ class GameMaster
     {
         $squares = $this->chessboard->getPieceMoveList($piece);
         
+        $this->addDoubleMoves( $piece, $squares );
+        $this->addEnPassant( $piece, $squares );
+        
         return $squares;
     }
     
@@ -229,6 +249,59 @@ class GameMaster
         }
         
         return $positions;
+    }
+    
+    public function addDoubleMoves($piece, &$squares)
+    {
+        if( !($piece instanceof Pieces\Pawn) ) {
+            return false;
+        }
+        
+        $move_vector = $piece->getMoveVectors();
+        $move_vector = $move_vector[0];
+        
+        $square = $piece->getCoordinates()->addVector($move_vector)->addVector($move_vector);
+        
+        if( !$piece->getHasMoved() &&
+            !$this->chessboard->getSquareContent( $square ) ) {
+            
+            $squares[] = $square;
+        }
+    }
+    
+    public function addEnPassant($piece, &$squares)
+    {
+        $en_passable = $this->game->getEnPassable();
+        
+        /* check if en passant can be done */
+        if( !$en_passable ) {
+            return false;
+        }
+        
+        /* check if $piece is a Pawn */
+        if( !($piece instanceof Pieces\Pawn) ) {
+            return false;
+        }
+        
+        $en_passable_coords = $en_passable->getCoordinates();
+        $piece_coords = $piece->getCoordinates();
+        
+        /* check if both pieces are in the same rank (if not, cant perform en passant) */
+        if( $en_passable_coords->getY() != $piece_coords->getY() ) {
+            return false;
+        }
+        
+        $difference = $en_passable_coords->getX() - $piece_coords->getX();
+
+        /* check if both pieces stand on adjacent squares */        
+        if( abs($difference) != 1 ) {
+            return false;
+        }
+        
+        $move_vector = $piece->getMoveVectors();
+        $move_vector = $move_vector[0]->setX( $move_vector[0]->getX() + $difference );
+        
+        $squares[] = $piece_coords->addVector( $move_vector );
     }
     
     public function setGame($game)

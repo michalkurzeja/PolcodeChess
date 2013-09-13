@@ -56,19 +56,29 @@ class GameController extends Controller
     
     public function updateAction($game_id)
     {
+        $cache = $this->get('winzou_cache.memcache');   
         
-        $gm = $this->get('GameMaster');
+        if( $cache->contains( "chess.move_count.{$game_id}" ) ) {
+            $game_move_count = $cache->fetch( "chess.move_count.{$game_id}" );
+        } else {
+            $game_move_count = $this->getDoctrine()->getManager()->getRepository('PolcodeChessBundle:Game')->findOneById($game_id)->getMoveCount();        
+            $cache->save( "chess.move_count.{$game_id}", $game_move_count );
+        }
         
         try {
             $data = json_decode($this->get('request')->getContent());
-            $update = $gm->getUpdate($this->getUser(), $game_id, $data->move_count);
+            if( $game_move_count > $data->move_count ) {
+                $gm = $this->get('GameMaster');
+                $update = $gm->getUpdate($this->getUser(), $game_id, $data->move_count);
+                return new JsonResponse($update);
+            }
         } catch(InvalidFormatException $e) {
             return new Response('Wrong format!', 404);
         } catch(NotYourGameException $e) {
             return new Response('Not your game!', 404);
         }
-        
-        return new JsonResponse($update);
+
+        return new Response();        
     }
 
     public function moveAction($game_id)

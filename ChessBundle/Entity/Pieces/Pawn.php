@@ -24,13 +24,6 @@ class Pawn extends Piece
      * 
      * @var boolean
      */
-    protected $en_passable = false;
-    
-    /**
-     * @ORM\Column(type="boolean")
-     * 
-     * @var boolean
-     */
     protected $has_moved = false; 
     /**
      * @var integer
@@ -92,29 +85,6 @@ class Pawn extends Piece
     public function getIsChecking()
     {
         return $this->is_checking;
-    }
-
-    /**
-     * Set en_passable
-     *
-     * @param boolean $enPassable
-     * @return Pawn
-     */
-    public function setEnPassable($enPassable)
-    {
-        $this->en_passable = $enPassable;
-    
-        return $this;
-    }
-
-    /**
-     * Get en_passable
-     *
-     * @return boolean 
-     */
-    public function getEnPassable()
-    {
-        return $this->en_passable;
     }
 
     /**

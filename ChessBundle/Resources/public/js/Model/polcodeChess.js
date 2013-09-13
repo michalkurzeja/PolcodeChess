@@ -15,7 +15,7 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 	var highlight = [];
 	var selection_highlight = [];
 	var selection = null;
-	var turn = false;
+	var turn;
 
 	$scope.highlightMovesOn = function(piece) {
 		if(turn) {
@@ -83,19 +83,17 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 	$scope.init = function(game_id, move_count, my_turn, color) {
 		$scope.game_id = game_id;
 		$scope.move_count = move_count;
-		$scope.turn = my_turn == 'yes' ? true : false;
+		turn = my_turn == 'yes' ? true : false;
 		$scope.player_white = color == 'white' ? true : false;
 		$scope.board = boardFactory.getBoardAndPieces($scope.game_id);
 		$chessboard = $('#chessboard');
-
-		console.log($scope.move_count);
+		console.log(turn);
 		
 		sendUpdateRequest();
-		setInterval( sendUpdateRequest, 5000 );
+		setInterval( sendUpdateRequest, 3000 );
 	}
 	
 	function sendUpdateRequest() {
-		console.log('Requesting update with move_count: ' + $scope.move_count);
 		$http({method: 'POST', url:  $scope.game_id + '/update', data: {move_count: $scope.move_count}, headers: {'Content-type': 'application/json'}})
 			.success( function(data) { update(data); } ).error(function() {
 				console.log('Error getting update!');
@@ -103,11 +101,9 @@ polcodeChess.controller('ChessboardCtrl', function($scope, $http, boardFactory) 
 	}
 	
 	function update(data) {
-		console.log(data);
-		turn = data.turn;
-
 		if(typeof data.move_count != 'undefined') {
 			console.log('Sync operations:');
+			turn = data.turn;
 			$scope.move_count = data.move_count;		
 			updateMovedPiece(data.last_moved);
 			refreshPiecesMoves(data.moves);

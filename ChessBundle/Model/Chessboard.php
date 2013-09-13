@@ -113,7 +113,9 @@ class Chessboard
             if( $this->isSquareWithinBoard($square) ) {
                 $sq_content = $this->getSquareContent($square);
                 
-                if( !$sq_content || $sq_content->getIsWhite() != $piece->getIsWhite() ) {
+                if( !$sq_content || 
+                        ( $sq_content->getIsWhite() != $piece->getIsWhite() &&
+                        false == ($piece instanceof \Polcode\ChessBundle\Entity\Pieces\Pawn) ) ) {
                     $squares[] = $square;
                 }
             }  
