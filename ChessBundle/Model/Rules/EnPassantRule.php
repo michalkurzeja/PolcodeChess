@@ -9,7 +9,7 @@ class EnPassantRule extends RuleAbstract
      public function checkRule(&$args)
      {
         $piece = $args['piece'];
-        $squares = $args['squares'];
+        $squares = &$args['squares'];
 
         $en_passable = $this->game->getEnPassable();
         

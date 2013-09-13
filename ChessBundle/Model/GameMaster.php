@@ -183,7 +183,8 @@ class GameMaster
     {
         $this->rules = array(
             new Rules\DoubleMoveRule( $this->chessboard, $this->game ),
-            new Rules\EnPassantRule( $this->chessboard, $this->game )
+            new Rules\EnPassantRule( $this->chessboard, $this->game ),
+            new Rules\PawnKillRule( $this->chessboard, $this->game )
         );
     }
     

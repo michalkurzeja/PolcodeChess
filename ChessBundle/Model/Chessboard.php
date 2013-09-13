@@ -61,6 +61,24 @@ class Chessboard
         return array_merge($this->whites, $this->blacks);
     }
     
+    public function getKing($white)
+    {
+        if($white) {
+            $pieces = $this->whites;
+        } else {
+            $pieces = $this->blacks;
+        }
+        
+        foreach($pieces as $piece) {
+            if( $piece instanceof Polcode\ChessBundle\Entity\Pieces\King ) {
+                return $piece;
+            }
+        }
+        
+        /* virtually impossible... */
+        return null;
+    }
+    
     public function isSquareWithinBoard(Vector $square)
     {
         if($square->getX() < 1 || $square->getX() > 8 ||$square->getY() < 1 ||$square->getY() > 8) {
